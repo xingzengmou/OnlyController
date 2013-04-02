@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".OnlyMainActivity" >
+
+	<ImageView android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@drawable/title"/>
+	
+	<LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="1"
+	    android:id="@+id/content_view_ly"
+	    android:background="#ffffffff">
+	    
+	</LinearLayout>
+	
+	<LinearLayout android:layout_width="fill_parent"
+	    android:layout_height="wrap_content">
+	    <RelativeLayout android:layout_width="wrap_content"
+	        android:layout_height="wrap_content">
+	        <LinearLayout android:layout_width="fill_parent"
+	            android:layout_height="wrap_content">
+	            <ImageView android:id="@+id/game_setting_btn"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:background="@drawable/game_setting"/>
+	            <ImageView android:id="@+id/key_setting_btn"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:background="@drawable/key_setting"/>
+	            <ImageView android:id="@+id/touch_setting_btn"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:background="@drawable/touch_setting"/>
+	            <ImageView android:id="@+id/setting_btn"
+	                android:layout_width="0dp"
+	                android:layout_height="wrap_content"
+	                android:layout_weight="1"
+	                android:background="@drawable/setting"/>
+	        </LinearLayout>
+	    </RelativeLayout>
+	</LinearLayout>
+
+</LinearLayout>
