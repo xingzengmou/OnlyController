@@ -3,48 +3,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".OnlyMainActivity" >
+    tools:context=".OnlyMainActivity"
+    android:background="@color/main_body_color" >
 
-	<ImageView android:layout_width="fill_parent"
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:layout_margin="5dp"
+        android:textColor="@color/white_color"/>
+	<ImageView android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:background="@drawable/title"/>
-	
-	<LinearLayout android:layout_width="fill_parent"
+	    android:background="@drawable/line"
+	    android:contentDescription="@string/app_name"/>
+    
+	<LinearLayout android:layout_width="match_parent"
 	    android:layout_height="0dp"
 	    android:layout_weight="1"
-	    android:id="@+id/content_view_ly"
-	    android:background="#ffffffff">
+	    android:orientation="vertical"
+	    android:id="@+id/content_ly"
+	    android:contentDescription="@string/app_name">
 	    
 	</LinearLayout>
 	
-	<LinearLayout android:layout_width="fill_parent"
-	    android:layout_height="wrap_content">
-	    <RelativeLayout android:layout_width="wrap_content"
-	        android:layout_height="wrap_content">
-	        <LinearLayout android:layout_width="fill_parent"
-	            android:layout_height="wrap_content">
-	            <ImageView android:id="@+id/game_setting_btn"
-	                android:layout_width="0dp"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:background="@drawable/game_setting"/>
-	            <ImageView android:id="@+id/key_setting_btn"
-	                android:layout_width="0dp"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:background="@drawable/key_setting"/>
-	            <ImageView android:id="@+id/touch_setting_btn"
-	                android:layout_width="0dp"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:background="@drawable/touch_setting"/>
-	            <ImageView android:id="@+id/setting_btn"
-	                android:layout_width="0dp"
-	                android:layout_height="wrap_content"
-	                android:layout_weight="1"
-	                android:background="@drawable/setting"/>
-	        </LinearLayout>
-	    </RelativeLayout>
+	<LinearLayout android:layout_height="wrap_content"
+	    android:layout_width="match_parent">
+	    <Button android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:text="@string/game_list_btn"
+	        android:textColor="@color/white_color"
+	        android:ellipsize="end"
+	        android:singleLine="true"
+	        android:id="@+id/game_list_btn"
+	        android:background="@drawable/btn_d"/>
+	    
+	    <Button android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:text="@string/key_config_btn"
+	        android:ellipsize="end"
+	        android:singleLine="true"
+	        android:textColor="@color/white_color"
+	        android:id="@+id/key_config_btn"
+	        android:background="@drawable/btn_n"/>
+	    
+	    <Button android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:gravity="center"
+	        android:text="@string/touch_config_btn"
+	        android:ellipsize="end"
+	        android:singleLine="true"
+	        android:id="@+id/touch_config_btn"
+	        android:textColor="@color/white_color"
+	        android:background="@drawable/btn_n"/>
 	</LinearLayout>
-
+    
 </LinearLayout>

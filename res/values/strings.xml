@@ -4,5 +4,8 @@
     <string name="app_name">OnlyController</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="game_list_btn">Game Config Files</string>
+    <string name="key_config_btn">Key Configuration</string>
+    <string name="touch_config_btn">Touch Configuration</string>
 
 </resources>
