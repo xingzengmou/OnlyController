@@ -11,6 +11,8 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int focus_d_color=0x7f040002;
+        public static final int focus_n_color=0x7f040003;
         public static final int main_body_color=0x7f040000;
         public static final int white_color=0x7f040001;
     }
@@ -27,27 +29,40 @@ public final class R {
     public static final class drawable {
         public static final int btn_d=0x7f020000;
         public static final int btn_n=0x7f020001;
-        public static final int focus=0x7f020002;
-        public static final int game_list_btn=0x7f020003;
-        public static final int game_setting=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int key_setting=0x7f020006;
-        public static final int line=0x7f020007;
-        public static final int setting=0x7f020008;
-        public static final int title=0x7f020009;
-        public static final int touch_setting=0x7f02000a;
+        public static final int click_state=0x7f020002;
+        public static final int content_line=0x7f020003;
+        public static final int focus=0x7f020004;
+        public static final int game_list_btn=0x7f020005;
+        public static final int game_setting=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
+        public static final int key_setting=0x7f020008;
+        public static final int line=0x7f020009;
+        public static final int setting=0x7f02000a;
+        public static final int title=0x7f02000b;
+        public static final int touch_setting=0x7f02000c;
     }
     public static final class id {
-        public static final int action_settings=0x7f090005;
-        public static final int content_ly=0x7f090000;
-        public static final int game_list_btn=0x7f090001;
-        public static final int icon_iv=0x7f090004;
-        public static final int key_config_btn=0x7f090002;
-        public static final int touch_config_btn=0x7f090003;
+        public static final int action_settings=0x7f09000e;
+        public static final int app_name_tv=0x7f090008;
+        public static final int checkbox_iv=0x7f09000b;
+        public static final int game_config_files_ly=0x7f090001;
+        public static final int game_list_btn=0x7f090004;
+        public static final int icon_iv=0x7f090007;
+        public static final int key_config_btn=0x7f090005;
+        public static final int key_config_ly=0x7f090002;
+        public static final int key_file_name_tv=0x7f090009;
+        public static final int key_name_tv=0x7f09000c;
+        public static final int map_key_name_tv=0x7f09000d;
+        public static final int title_ly=0x7f090000;
+        public static final int touch_config_btn=0x7f090006;
+        public static final int touch_config_ly=0x7f090003;
+        public static final int touch_file_name_tv=0x7f09000a;
     }
     public static final class layout {
         public static final int activity_only_main=0x7f030000;
-        public static final int view_game_config_files=0x7f030001;
+        public static final int view_game_config_files_phone_portrait=0x7f030001;
+        public static final int view_key_configuration=0x7f030002;
+        public static final int view_settings=0x7f030003;
     }
     public static final class menu {
         public static final int only_main=0x7f080000;
@@ -58,7 +73,10 @@ public final class R {
         public static final int game_list_btn=0x7f060003;
         public static final int hello_world=0x7f060002;
         public static final int key_config_btn=0x7f060004;
+        public static final int key_file_name_tv=0x7f060006;
         public static final int touch_config_btn=0x7f060005;
+        public static final int touch_file_name_tv=0x7f060007;
+        public static final int unknown=0x7f060008;
     }
     public static final class style {
         /** 

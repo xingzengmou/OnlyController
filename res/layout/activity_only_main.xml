@@ -6,24 +6,43 @@
     tools:context=".OnlyMainActivity"
     android:background="@color/main_body_color" >
 
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title_ly"
+        android:background="#ff000000" >
     <TextView android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:textColor="@color/white_color"/>
+    </LinearLayout>
+    
 	<ImageView android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:background="@drawable/line"
 	    android:contentDescription="@string/app_name"/>
     
-	<LinearLayout android:layout_width="match_parent"
-	    android:layout_height="0dp"
-	    android:layout_weight="1"
-	    android:orientation="vertical"
-	    android:id="@+id/content_ly"
-	    android:contentDescription="@string/app_name">
-	    
-	</LinearLayout>
+	 <ScrollView android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+		<LinearLayout android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical"
+		    android:contentDescription="@string/app_name" >
+		    <LinearLayout android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:id="@+id/game_config_files_ly" />
+		    <LinearLayout android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:id="@+id/key_config_ly" />
+		    <LinearLayout android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical"
+		        android:id="@+id/touch_config_ly" />
+		</LinearLayout>
+	</ScrollView>
 	
 	<LinearLayout android:layout_height="wrap_content"
 	    android:layout_width="match_parent">

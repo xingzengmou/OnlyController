@@ -2,6 +2,7 @@ package com.only.controller;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,15 @@ public class OnlyMainActivity extends Activity {
 	/**
 	 * LinearLayout define
 	 */
-	private LinearLayout lyContent;
+	private LinearLayout lyGameConfigFiles;
+	private LinearLayout lyKeyConfig;
+	private LinearLayout lyTouchConfig;
+	private LinearLayout lyTitle;
+	/**
+	 * View for configuration
+	 */
+	private ViewGameConfiguration mViewGameConfiguration = null;
+	private ViewKeyConfiguration mViewKeyConfiguration = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +36,18 @@ public class OnlyMainActivity extends Activity {
 		setContentView(R.layout.activity_only_main);
 		getViewHandles();
 		setViewListener();
+		newView();
 	}
 
 	private void getViewHandles() {
 		btnGameConfigFiles = (Button) findViewById(R.id.game_list_btn);
 		btnKeyConfig = (Button) findViewById(R.id.key_config_btn);
 		btnTouchConfig = (Button) findViewById(R.id.touch_config_btn);
-		lyContent = (LinearLayout) findViewById(R.id.content_ly);
+		lyGameConfigFiles = (LinearLayout) findViewById(R.id.game_config_files_ly);
+		lyKeyConfig = (LinearLayout) findViewById(R.id.key_config_ly);
+		lyTouchConfig = (LinearLayout) findViewById(R.id.touch_config_ly);
+		lyTitle = (LinearLayout) findViewById(R.id.title_ly);
+//		lyTitle.getBackground().setAlpha(10);
 	}
 	
 	private void setViewListener() {
@@ -42,6 +56,12 @@ public class OnlyMainActivity extends Activity {
 		btnTouchConfig.setOnClickListener(btnOnClicks);
 	}
 	
+	private void newView() {
+		mViewGameConfiguration = new ViewGameConfiguration(lyGameConfigFiles, this.getLayoutInflater());
+		mViewKeyConfiguration = new ViewKeyConfiguration(lyKeyConfig, this.getLayoutInflater());
+		mViewGameConfiguration.show();
+		mViewKeyConfiguration.hide();
+	}
 	
 	private View.OnClickListener btnOnClicks = new View.OnClickListener() {
 		
@@ -52,10 +72,18 @@ public class OnlyMainActivity extends Activity {
 				switchBackground(btnGameConfigFiles, true);
 				switchBackground(btnKeyConfig, false);
 				switchBackground(btnTouchConfig, false);
+				if (mViewGameConfiguration != null) {
+					mViewKeyConfiguration.hide();
+					mViewGameConfiguration.show();
+				}
 			} else if (v.equals(btnKeyConfig)) {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, true);
 				switchBackground(btnTouchConfig, false);
+				if (mViewKeyConfiguration != null) {
+					mViewGameConfiguration.hide();
+					mViewKeyConfiguration.show();
+				}
 			} else if (v.equals(btnTouchConfig)) {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, false);

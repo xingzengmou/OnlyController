@@ -3,5 +3,7 @@
     
     <color name="main_body_color">#ff282828</color>
     <color name="white_color">#ffffffff</color>
+    <color name="focus_d_color">#ff0b93e1</color>
+    <color name="focus_n_color">#ff282828</color>
     
 </resources>

@@ -7,5 +7,8 @@
     <string name="game_list_btn">Game Config Files</string>
     <string name="key_config_btn">Key Configuration</string>
     <string name="touch_config_btn">Touch Configuration</string>
+    <string name="key_file_name_tv">"Key File: "</string>
+    <string name="touch_file_name_tv">"Touch File: "</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

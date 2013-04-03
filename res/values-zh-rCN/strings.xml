@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">后力游戏模拟器</string>
+    <string name="game_list_btn">游戏配置</string>
+    <string name="key_config_btn">按键配置</string>
+    <string name="touch_config_btn">触摸配置</string>
+    <string name="key_file_name_tv">"按键配置文件: "</string>
+    <string name="touch_file_name_tv">"触摸配置文件: "</string>
+    <string name="unknown">未知</string>
+
+</resources>
