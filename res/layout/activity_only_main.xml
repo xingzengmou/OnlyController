@@ -72,10 +72,10 @@
 	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
 	        android:gravity="center"
-	        android:text="@string/touch_config_btn"
+	        android:text="@string/settings_tv"
 	        android:ellipsize="end"
 	        android:singleLine="true"
-	        android:id="@+id/touch_config_btn"
+	        android:id="@+id/settings_tv"
 	        android:textColor="@color/white_color"
 	        android:background="@drawable/btn_n"/>
 	</LinearLayout>

@@ -16,7 +16,7 @@ public class OnlyMainActivity extends Activity {
 	 */
 	private Button btnGameConfigFiles;
 	private Button btnKeyConfig;
-	private Button btnTouchConfig;
+	private Button btnSettings;
 	/**
 	 * LinearLayout define
 	 */
@@ -42,18 +42,17 @@ public class OnlyMainActivity extends Activity {
 	private void getViewHandles() {
 		btnGameConfigFiles = (Button) findViewById(R.id.game_list_btn);
 		btnKeyConfig = (Button) findViewById(R.id.key_config_btn);
-		btnTouchConfig = (Button) findViewById(R.id.touch_config_btn);
+		btnSettings = (Button) findViewById(R.id.settings_tv);
 		lyGameConfigFiles = (LinearLayout) findViewById(R.id.game_config_files_ly);
 		lyKeyConfig = (LinearLayout) findViewById(R.id.key_config_ly);
 		lyTouchConfig = (LinearLayout) findViewById(R.id.touch_config_ly);
 		lyTitle = (LinearLayout) findViewById(R.id.title_ly);
-//		lyTitle.getBackground().setAlpha(10);
 	}
 	
 	private void setViewListener() {
 		btnGameConfigFiles.setOnClickListener(btnOnClicks);
 		btnKeyConfig.setOnClickListener(btnOnClicks);
-		btnTouchConfig.setOnClickListener(btnOnClicks);
+		btnSettings.setOnClickListener(btnOnClicks);
 	}
 	
 	private void newView() {
@@ -71,7 +70,7 @@ public class OnlyMainActivity extends Activity {
 			if (v.equals(btnGameConfigFiles)) {
 				switchBackground(btnGameConfigFiles, true);
 				switchBackground(btnKeyConfig, false);
-				switchBackground(btnTouchConfig, false);
+				switchBackground(btnSettings, false);
 				if (mViewGameConfiguration != null) {
 					mViewKeyConfiguration.hide();
 					mViewGameConfiguration.show();
@@ -79,15 +78,15 @@ public class OnlyMainActivity extends Activity {
 			} else if (v.equals(btnKeyConfig)) {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, true);
-				switchBackground(btnTouchConfig, false);
+				switchBackground(btnSettings, false);
 				if (mViewKeyConfiguration != null) {
 					mViewGameConfiguration.hide();
 					mViewKeyConfiguration.show();
 				}
-			} else if (v.equals(btnTouchConfig)) {
+			} else if (v.equals(btnSettings)) {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, false);
-				switchBackground(btnTouchConfig, true);
+				switchBackground(btnSettings, true);
 			}
 		}
 	};
