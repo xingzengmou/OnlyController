@@ -45,15 +45,16 @@ public class OnlyMainActivity extends Activity {
 		getViewHandles();
 		setViewListener();
 		newView();
-//		if (Root.root()) {
-//			Toast.makeText(this, R.string.root_successful, Toast.LENGTH_SHORT);
-//			if (InputJar.run(this)) {
-//				InputAdapter.init();
-//				InputAdapter.start();
-//			}
-//		} else {
-//			Toast.makeText(this, R.string.root_failed, Toast.LENGTH_SHORT);
-//		}
+	
+		if (Root.root()) {
+			Toast.makeText(this, R.string.root_successful, Toast.LENGTH_SHORT);
+			if (InputJar.run(this)) {
+				InputAdapter.init();
+				InputAdapter.start();
+			}
+		} else {
+			Toast.makeText(this, R.string.root_failed, Toast.LENGTH_SHORT);
+		}
 	}
 
 	private void getViewHandles() {

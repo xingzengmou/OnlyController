@@ -24,11 +24,12 @@ public class Root {
 			Process process = Runtime.getRuntime().exec("su");
 			dos = new DataOutputStream(process.getOutputStream());
 			DataInputStream dis = new DataInputStream(process.getInputStream());
-			dos.write("id".getBytes());
+			dos.write("id \n".getBytes());
 			dos.flush();
 			String retLine = dis.readLine();
+			if (retLine == null) return false;
 			if (retLine.contains("uid=0")) {
-//				initConsole();
+				initConsole();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
