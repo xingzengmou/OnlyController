@@ -40,7 +40,7 @@
 		    <LinearLayout android:layout_width="match_parent"
 		        android:layout_height="wrap_content"
 		        android:orientation="vertical"
-		        android:id="@+id/touch_config_ly" />
+		        android:id="@+id/settings_ly" />
 		</LinearLayout>
 	</ScrollView>
 	
