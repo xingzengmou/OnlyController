@@ -38,7 +38,7 @@ public class InputJar {
 		} else {
 			copyInputJarFile(thiz);
 			runInputJar();
-			checkInputJarRunning(thiz);
+//			checkInputJarRunning(thiz);
 		}
 		
 		return true;

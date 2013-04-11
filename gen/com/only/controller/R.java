@@ -65,6 +65,7 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
+        public static final int connect_inputjar_error=0x7f06000f;
         public static final int external_starage_has_unmounted=0x7f06000b;
         public static final int game_list_btn=0x7f060003;
         public static final int hello_world=0x7f060002;

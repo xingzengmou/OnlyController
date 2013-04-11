@@ -16,5 +16,6 @@
     <string name="make_sdcard_input_jar_dir_error">Make \" inputjar dir \" in SDCard Error</string>
     <string name="root_successful">Root Successful</string>
     <string name="root_failed">Root Failedl</string>
+    <string name="connect_inputjar_error">Connect OnlyInput Fialed</string>
 
 </resources>
