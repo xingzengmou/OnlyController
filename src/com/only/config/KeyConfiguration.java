@@ -20,7 +20,8 @@ public class KeyConfiguration {
 	private File configFile = null;
 	private String configPath = null;
 	private String configFileName = null;
-	private List<Map<Integer, Integer>> listKeyMap = null;
+//	private List<Map<Integer, Integer>> listKeyMap = null;
+	private Map<Integer, Integer> keyMap = null;
 	
 	public KeyConfiguration(String configFileName) {
 		this.configFileName = configFileName;
@@ -41,7 +42,8 @@ public class KeyConfiguration {
 			return false;
 		}
 		
-		listKeyMap = new ArrayList<Map<Integer, Integer>>();
+//		listKeyMap = new ArrayList<Map<Integer, Integer>>();
+		keyMap = new HashMap<Integer, Integer>();
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(configFile));
 			String line = br.readLine();
@@ -76,7 +78,7 @@ public class KeyConfiguration {
 		String mapKey = keyList[2].trim();
 		Log.e(TAG, "scancodestr = " + scanCodeStr + " mapKey = " + mapKey);
 		int scanCode = Integer.parseInt(scanCodeStr);
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+//		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		int intKeyMap = 0;
 		if (mapKey.contains("SOFT_LEFT")) {
 			intKeyMap = KeyEvent.KEYCODE_SOFT_LEFT;
@@ -360,12 +362,17 @@ public class KeyConfiguration {
 			intKeyMap = KeyEvent.KEYCODE_BUTTON_16;
 		}
 		if (intKeyMap != 0) {
-			map.put(scanCode, intKeyMap);
-			listKeyMap.add(map);
+//			map.put(scanCode, intKeyMap);
+//			listKeyMap.add(map);
+			keyMap.put(scanCode, intKeyMap);
 		}
 	}
 	
 	public void dumpKeys() {
-		Log.e(TAG, "listKeyMap = " + listKeyMap);
+		Log.e(TAG, "keyMap = " + keyMap);
+	}
+	
+	public int getKeyCode(int scanCode) {
+		return keyMap.get(scanCode);
 	}
 }

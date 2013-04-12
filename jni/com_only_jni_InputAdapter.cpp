@@ -40,6 +40,7 @@ static void init_jni_global() {
 
 #ifdef BUILD_NDK
 static JNIEnv *_env = NULL;
+static JNIEnv *_keyEnv = NULL;
 class AndroidRuntime {
 public:
 	static JNIEnv* getJNIEnv() {
@@ -70,10 +71,17 @@ static void doOnOpenEventConfigFile(char *configFileName);
 
 class InputAdapterCallBack : public CallBackInterface {
 public:
+
 	void attachEnv() {
         _env = AndroidRuntime::getJNIEnv();
         sg_jni_global.jvm->GetEnv((void **) &_env, JNI_VERSION_1_4);
         sg_jni_global.jvm->AttachCurrentThread(&_env, NULL);
+	}
+
+	void attachKeyEnv() {
+		_keyEnv = AndroidRuntime::getJNIEnv();
+        sg_jni_global.jvm->GetEnv((void**) &_keyEnv, JNI_VERSION_1_4);
+        sg_jni_global.jvm->AttachCurrentThread(&_keyEnv, NULL);
 	}
 
 	void detachEnv() {
@@ -121,12 +129,11 @@ static void doOnKeyDown(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	mInputAdapterCallBack->attachEnv();
-    LOGE("_env = 0X%0X   inputCallBackField.onInputAdapterKeyDown = 0x%0x g_com_only_jni_InputAdapter_class = 0x%0x",
-    		_env, inputCallBackField.onInputAdapterKeyDown, g_com_only_jni_InputAdapter_class);
-    _env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
-                    inputCallBackField.onInputAdapterKeyDown, scanCode, value, _env->NewStringUTF(configFileName));
-    mInputAdapterCallBack->detachEnv();
+	if (_keyEnv == NULL) mInputAdapterCallBack->attachKeyEnv();
+    LOGE("_keyEnv = 0X%0X   inputCallBackField.onInputAdapterKeyDown = 0x%0x g_com_only_jni_InputAdapter_class = 0x%0x",
+    		_keyEnv, inputCallBackField.onInputAdapterKeyDown, g_com_only_jni_InputAdapter_class);
+    _keyEnv->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
+                    inputCallBackField.onInputAdapterKeyDown, scanCode, value, _keyEnv->NewStringUTF(configFileName));
 #endif
 }
 
@@ -134,10 +141,9 @@ static void doOnKeyUp(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	mInputAdapterCallBack->attachEnv();
-	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
-                   inputCallBackField.onInputAdapterKeyUp, scanCode, value, _env->NewStringUTF(configFileName));
-	mInputAdapterCallBack->detachEnv();
+	if (_keyEnv == NULL) mInputAdapterCallBack->attachKeyEnv();
+	_keyEnv->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
+                   inputCallBackField.onInputAdapterKeyUp, scanCode, value, _keyEnv->NewStringUTF(configFileName));
 #endif
 }
 
