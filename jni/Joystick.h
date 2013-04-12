@@ -26,13 +26,13 @@ public:
 		LOGE("[%s][%d] ==> register callbackinterface", __FUNCTION__, __LINE__);
 	}
 	
-	int joystickProcess(const RawEvent *rawEvent) {
+	int joystickProcess(const RawEvent *rawEvent, char *configFileName) {
 		if (mCallBackInterface == NULL) {
 			LOGE("[%s][%d] ==> mCallBackInterface is NULL", __FUNCTION__, __LINE__);
 			return -1;
 		}
 		
-		mCallBackInterface->joystickProcess(rawEvent);
+		mCallBackInterface->joystickProcess(rawEvent, configFileName);
 		return 1;
 	}
 	

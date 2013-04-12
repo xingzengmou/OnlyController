@@ -20,6 +20,7 @@ struct fields_t {
 	jmethodID onInputAdapterKeyUp;
 	jmethodID onInputAdapterJoystickChange;
 	jmethodID onDeviceAdded;
+	jmethodID onOpenEventConfigFile;
 };
 
 static fields_t inputCallBackField;
@@ -61,41 +62,50 @@ struct RawKeyEvent {
 
 struct RawKeyEvent keyEvent;
 
-static void doOnKeyDown(int scanCode, int value);
-static void doOnKeyUp(int scanCode, int value);
-static void doOnJoystickDataChange(int scanCode, int value);
+static void doOnKeyDown(int scanCode, int value, char *configFileName);
+static void doOnKeyUp(int scanCode, int value, char *configFileName);
+static void doOnJoystickDataChange(int scanCode, int value, char *configFileName);
 static void doOnDeviceAdded(char *devName);
+static void doOnOpenEventConfigFile(char *configFileName);
 
 class InputAdapterCallBack : public CallBackInterface {
 public:
-	void initEnv() {
+	void attachEnv() {
         _env = AndroidRuntime::getJNIEnv();
         sg_jni_global.jvm->GetEnv((void **) &_env, JNI_VERSION_1_4);
         sg_jni_global.jvm->AttachCurrentThread(&_env, NULL);
 	}
 
-	int keyProcess(const RawEvent *rawEvent) {
+	void detachEnv() {
+		//sg_jni_global.jvm->DetachCurrentThread();
+	}
+
+	int keyProcess(const RawEvent *rawEvent, char *configFileName) {
 		int scanCode = rawEvent->scanCode;
 		int value = rawEvent->value;
 		LOGE("[%s][%d] ==> raw event scancode = 0X%02X value = 0x%02x", __FUNCTION__, __LINE__, scanCode, value);
 		if (scanCode == 0) return 1;
 		if (value == 1) {
-			doOnKeyDown(scanCode, value);
+			doOnKeyDown(scanCode, value, configFileName);
 		} else {
-			doOnKeyUp(scanCode, value);
+			doOnKeyUp(scanCode, value, configFileName);
 		}
 		return 1; 
 	}
 	
-	int joystickProcess(const RawEvent *rawEvent) { 
+	int joystickProcess(const RawEvent *rawEvent, char *configFileName) {
 		int scanCode = rawEvent->scanCode;
 		int value = rawEvent->value;
-		doOnJoystickDataChange(scanCode, value);
+		doOnJoystickDataChange(scanCode, value, configFileName);
 		return 1; 
 	}
 
 	void deviceAdded(char *devName) {
 		doOnDeviceAdded(devName);
+	}
+
+	void openEventConfigFile(char *configFileName) {
+		doOnOpenEventConfigFile(configFileName);
 	}
 };
 
@@ -107,41 +117,52 @@ static sp<InputAdapter> mInputAdapter = NULL;
 static sp<InputAdapterCallBack> mInputAdapterCallBack;
 #endif
 
-static void doOnKeyDown(int scanCode, int value) {
+static void doOnKeyDown(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	if (_env == NULL) mInputAdapterCallBack->initEnv();
+	mInputAdapterCallBack->attachEnv();
     LOGE("_env = 0X%0X   inputCallBackField.onInputAdapterKeyDown = 0x%0x g_com_only_jni_InputAdapter_class = 0x%0x",
     		_env, inputCallBackField.onInputAdapterKeyDown, g_com_only_jni_InputAdapter_class);
     _env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
-                    inputCallBackField.onInputAdapterKeyDown, scanCode, value);
-    LOGE("CALL DO ONKEYDOWN");
+                    inputCallBackField.onInputAdapterKeyDown, scanCode, value, _env->NewStringUTF(configFileName));
+    mInputAdapterCallBack->detachEnv();
 #endif
 }
 
-static void doOnKeyUp(int scanCode, int value) {
+static void doOnKeyUp(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	if (_env == NULL) mInputAdapterCallBack->initEnv();
-    _env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
-                   inputCallBackField.onInputAdapterKeyUp, scanCode, value);
+	mInputAdapterCallBack->attachEnv();
+	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
+                   inputCallBackField.onInputAdapterKeyUp, scanCode, value, _env->NewStringUTF(configFileName));
+	mInputAdapterCallBack->detachEnv();
 #endif
 }
 
-static void doOnJoystickDataChange(int scanCode, int value) {
+static void doOnJoystickDataChange(int scanCode, int value, char *configFileName) {
 #if 1
-	if (_env == NULL) mInputAdapterCallBack->initEnv();
-    _env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
-                    inputCallBackField.onInputAdapterJoystickChange, scanCode, value);
+	mInputAdapterCallBack->attachEnv();
+	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
+                    inputCallBackField.onInputAdapterJoystickChange, scanCode, value, _env->NewStringUTF(configFileName));
+	mInputAdapterCallBack->detachEnv();
 #endif
 }
 
 static void doOnDeviceAdded(char *devName) {
-	if (_env == NULL) mInputAdapterCallBack->initEnv();
+	mInputAdapterCallBack->attachEnv();
 	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
 						inputCallBackField.onDeviceAdded, _env->NewStringUTF(devName));
+	mInputAdapterCallBack->detachEnv();
+}
+
+static void doOnOpenEventConfigFile(char *configFileName) {
+	mInputAdapterCallBack->attachEnv();
+	LOGE("[%s][%d] ==> _env = 0x%0x", __FUNCTION__, __LINE__, _env);
+	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
+					inputCallBackField.onOpenEventConfigFile, _env->NewStringUTF(configFileName));
+	mInputAdapterCallBack->detachEnv();
 }
 
 JNIEXPORT jboolean JNICALL Java_com_only_jni_InputAdapter_init(JNIEnv *env, jclass clazz) {
@@ -166,24 +187,29 @@ JNIEXPORT jboolean JNICALL Java_com_only_jni_InputAdapter_init(JNIEnv *env, jcla
 
 	g_com_only_jni_InputAdapter_class = (jclass)env->NewGlobalRef(thiz);
 
-	inputCallBackField.onInputAdapterKeyDown = env->GetStaticMethodID(thiz, "onInputAdapterKeyDown", "(II)V");
+	inputCallBackField.onInputAdapterKeyDown = env->GetStaticMethodID(thiz, "onInputAdapterKeyDown", "(IILjava/lang/String;)V");
 	if (inputCallBackField.onInputAdapterKeyDown == NULL) {
-		LOGE("[%s][%d] ==> can't get onInputAdapterKeyDown from com.only.jni.InputCallBack class file", __FUNCTION__, __LINE__);
+		LOGE("[%s][%d] ==> can't get onInputAdapterKeyDown from com.only.jni.InputAdapter class file", __FUNCTION__, __LINE__);
 		return JNI_TRUE;
 	}
-	inputCallBackField.onInputAdapterKeyUp = env->GetStaticMethodID(thiz, "onInputAdapterKeyUp", "(II)V");
+	inputCallBackField.onInputAdapterKeyUp = env->GetStaticMethodID(thiz, "onInputAdapterKeyUp", "(IILjava/lang/String;)V");
 	if (inputCallBackField.onInputAdapterKeyUp == NULL) {
-		LOGE("[%s][%d] ==> can't get onInputAdapterKeyUp from com.only.jni.InputCallBack class file", __FUNCTION__, __LINE__);
+		LOGE("[%s][%d] ==> can't get onInputAdapterKeyUp from com.only.jni.InputAdapter class file", __FUNCTION__, __LINE__);
 		return JNI_FALSE;
 	}
-	inputCallBackField.onInputAdapterJoystickChange = env->GetStaticMethodID(thiz, "onInputAdapterJoystickChange", "(II)V");
+	inputCallBackField.onInputAdapterJoystickChange = env->GetStaticMethodID(thiz, "onInputAdapterJoystickChange", "(IILjava/lang/String;)V");
 	if (inputCallBackField.onInputAdapterJoystickChange == NULL) {
-		LOGE("[%s][%d] ==> can't get onInputAdapterJoystickChange from com.only.jni.InputCallBack class file", __FUNCTION__, __LINE__);
+		LOGE("[%s][%d] ==> can't get onInputAdapterJoystickChange from com.only.jni.InputAdapter class file", __FUNCTION__, __LINE__);
 		return JNI_FALSE;
 	}
 	inputCallBackField.onDeviceAdded = env->GetStaticMethodID(thiz, "onDeviceAdded", "(Ljava/lang/String;)V");
 	if (inputCallBackField.onDeviceAdded == NULL) {
-		LOGE("[%s][%d] ==> can't get onInputAdapterJoystickChange from com.only.jni.onDeviceAdded class file", __FUNCTION__, __LINE__);
+		LOGE("[%s][%d] ==> can't get onInputAdapterJoystickChange from com.only.jni.InputAdapter class file", __FUNCTION__, __LINE__);
+		return JNI_FALSE;
+	}
+	inputCallBackField.onOpenEventConfigFile = env->GetStaticMethodID(thiz, "onOpenEventConfigFile", "(Ljava/lang/String;)V");
+	if (inputCallBackField.onOpenEventConfigFile == NULL) {
+		LOGE("[%s][%d] ==> can't get onOpenEventConfigFile from com.only.jni.InputAdapter class file", __FUNCTION__, __LINE__);
 		return JNI_FALSE;
 	}
 

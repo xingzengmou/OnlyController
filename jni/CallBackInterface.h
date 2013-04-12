@@ -11,9 +11,10 @@ namespace android {
 class CallBackInterface  : public virtual RefBase  {
 #endif
 public:
+	virtual void openEventConfigFile(char *configFileName) = 0;
 	virtual void deviceAdded(char *devName) = 0;
-	virtual int keyProcess(const RawEvent *rawEvent) = 0;
-	virtual int joystickProcess(const RawEvent *rawEvent) = 0;
+	virtual int keyProcess(const RawEvent *rawEvent, char *configFileName) = 0;
+	virtual int joystickProcess(const RawEvent *rawEvent, char *configFileName) = 0;
 };
 
 #ifdef BUILD_NDK

@@ -181,7 +181,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 	}
 
 #ifdef BUILD_NDK
-	struct InputDeviceIdentifier identifier;
+	struct InputDeviceIdentifier *identifier = (struct InputDeviceIdentifier*)calloc(sizeof(struct InputDeviceIdentifier), sizeof(char));
 #else
 	InputDeviceIdentifier identifier;
 #endif
@@ -191,7 +191,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 	} else {
 		buffer[sizeof(buffer) - 1] = '\0';
 #ifdef BUILD_NDK
-		memcpy(identifier.name, buffer, sizeof(buffer));
+		memcpy(identifier->name, buffer, sizeof(buffer));
 #else
 		identifier.name.setTo(buffer);
 #endif
@@ -203,7 +203,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 #if 0
 	if (mExcludedDevices != NULL) {
 		for (size_t i = 0; i < sizeof(mExcludedDevices) / sizeof(struct ExcludeDevices); i ++) {
-			if (0 == strcmp(identifier.name, mExcludedDevices.name)) {
+			if (0 == strcmp(identifier->name, mExcludedDevices.name)) {
 				close(fd);
 				return -1;
 			}
@@ -239,19 +239,24 @@ int EventHub::openDeviceLocked(char *devicePath) {
 		close(fd);
 		return -1;
 	}
-
+#if BUILD_NDK
+	identifier->bus = inputId.bustype;
+	identifier->product = inputId.product;
+	identifier->vendor = inputId.vendor;
+	identifier->version = inputId.version;
+#else
 	identifier.bus = inputId.bustype;
 	identifier.product = inputId.product;
 	identifier.vendor = inputId.vendor;
 	identifier.version = inputId.version;
-
+#endif
 	// get device physical location
 	if (ioctl(fd, EVIOCGPHYS(sizeof(buffer) - 1), &buffer) < 1) {
 
 	} else {
 		buffer[sizeof(buffer) - 1] = '\0';
 #ifdef BUILD_NDK
-		memcpy(identifier.location, buffer, sizeof(buffer));
+		memcpy(identifier->location, buffer, sizeof(buffer));
 #else
 		identifier.location.setTo(buffer);
 #endif
@@ -263,7 +268,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 	} else {
 		buffer[sizeof(buffer) - 1] = '\0';
 #ifdef BUILD_NDK
-		memcpy(identifier.uniqueId, buffer, sizeof(buffer));
+		memcpy(identifier->uniqueId, buffer, sizeof(buffer));
 #else
 		identifier.uniqueId.setTo(buffer);
 #endif
@@ -281,7 +286,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 
 	int32_t deviceId = mNextDeviceId++;
 #ifdef BUILD_NDK
-	Device *device = new Device(fd, deviceId, devicePath, &identifier);
+	Device *device = new Device(fd, deviceId, devicePath, identifier);
 #else
 	Device *device = new Device(fd, deviceId, String8(devicePath), identifier);
 #endif
@@ -306,6 +311,9 @@ int EventHub::openDeviceLocked(char *devicePath) {
 	if (haveKeyBoardKeys || haveGamepadButtons) {
 		device->classes |= INPUT_DEVICE_CLASS_KEYBOARD;
 		deviceValid = 1;
+#if BUILD_NDK
+		mABSInputAdapter->openEventConfigFile(identifier->name);
+#endif
 	}
 
 	//is this a modern multi-touch driver
@@ -314,13 +322,13 @@ int EventHub::openDeviceLocked(char *devicePath) {
 		if (test_bit(BTN_TOUCH, device->keyBitmask) || !haveGamepadButtons) {
 			device->classes |= INPUT_DEVICE_CLASS_TOUCH
 					| INPUT_DEVICE_CLASS_TOUCH_MT;
-			deviceValid = 1;
+			deviceValid = 0;
 		}
 	} else if (test_bit(BTN_TOUCH, device->keyBitmask)
 			&& test_bit(ABS_X, device->absBitmask)
 			&& test_bit(ABS_Y, device->absBitmask)) { //is this an old style single-touch driver
 		device->classes |= INPUT_DEVICE_CLASS_TOUCH;
-		deviceValid = 1;
+		deviceValid = 0;
 	}
 
 	//see if this device is a joystick
@@ -368,7 +376,7 @@ int EventHub::openDeviceLocked(char *devicePath) {
 	return 0;
 }
 
-int EventHub::getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize) {
+int EventHub::getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize, char *confFileName) {
 	int ret = 0;
 
 	int max_fd = 0;
@@ -459,6 +467,8 @@ int EventHub::getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize) 
 		p = mDevices;
 		do {
 			if (FD_ISSET(p->fd, &input)) {
+				LOGE("[%s][%d] ==> xingzengmou identifier->name = %s", __FUNCTION__, __LINE__, p->identifier->name);
+				memcpy(confFileName, p->identifier->name, strlen(p->identifier->name));
 				readDevice(p, buffer, bufferSize);
 			}
 			p = p->next;

@@ -124,7 +124,7 @@ public:
 	int init();
 	void release();
 	
-	int getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize);
+	int getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize, char *confFileName);
 	
 	struct Device {
 		Device *next;
@@ -158,7 +158,7 @@ public:
         	void close();
 	};
 	
-	int openDeviceLocked(char *devicePath);
+	int openDeviceLocked(char *devicePath); // this function will be shown to InputAdapter.cpp
 	void closeDeviceLocked(Device *device);
 	Device* getDeviceByPathLocked(char* devicePath);
 	Device* getDeviceByClassesLocked(uint32_t classes);

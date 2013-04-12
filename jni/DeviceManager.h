@@ -18,6 +18,10 @@ public:
 	void deviceAdded(char *devName) {
 		mCallBackInterface->deviceAdded(devName);
 	}
+	
+	void openEventConfigFile(char *configFileName) {
+		mCallBackInterface->openEventConfigFile(configFileName);
+	}
 private:
 	CallBackInterface *mCallBackInterface;
 };

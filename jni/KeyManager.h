@@ -18,13 +18,13 @@ public:
 		return 1;
 	}
 	
-	int processKeys(const RawEvent *rawEvent) {
+	int processKeys(const RawEvent *rawEvent, char *configFileName) {
 		if (mCallBackInterface == NULL) {
 			LOGE("[%s][%d] ==> mCallBackInterface = NULL", __FUNCTION__, __LINE__);
 			return -1;
 		}
 		LOGE("[%s][%d] ==> keyProcess", __FUNCTION__, __LINE__);
-		mCallBackInterface->keyProcess(rawEvent);
+		mCallBackInterface->keyProcess(rawEvent, configFileName);
 		return 0;
 	}
 	

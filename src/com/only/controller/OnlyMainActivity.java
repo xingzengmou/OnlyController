@@ -1,5 +1,8 @@
 package com.only.controller;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+
 import com.only.inputjar.InputJar;
 import com.only.jni.InputAdapter;
 import com.only.net.socket.netSocket;
@@ -37,7 +40,6 @@ public class OnlyMainActivity extends Activity {
 	private LinearLayout lySettings;
 	private LinearLayout lyTitle;
 	
-	private Handler handler;
 	private Activity thiz;
 	/**
 	 * View for configuration
@@ -54,7 +56,7 @@ public class OnlyMainActivity extends Activity {
 		getViewHandles();
 		setViewListener();
 		newView();
-		handler = new Handler();
+		
 		if (Root.root()) {
 			Toast.makeText(this, R.string.root_successful, Toast.LENGTH_SHORT).show();
 			if (InputJar.run(this)) {
@@ -72,8 +74,11 @@ public class OnlyMainActivity extends Activity {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					netSocket.connectService();
-					netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
+					if (!netSocket.connectService()) {
+						mHandler.sendEmptyMessage(MSG_CONNECT_INPUT_JAR_FAILED);
+					} else {
+							netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
+					}
 				}
 				
 			}).start();

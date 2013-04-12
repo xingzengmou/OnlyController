@@ -32,9 +32,11 @@ public:
 	int start();
 	int stop();
 	void loopOnce();
-	void processRawEventLocked(const RawEvent *eventBuffer);
+	void processRawEventLocked(const RawEvent *eventBuffer, char *configFileName);
 	void dumpRawEvent(const RawEvent *event);
+	void openEventConfigFile(char *configFileName);
 	void deviceAdded(char *devName);
+	int openDeviceLocked(char *devicePath);
 	
 #ifdef BUILD_NDK
 
@@ -61,6 +63,7 @@ public:
 		};
 #endif
 	
+	char confFileName[126];
 private:
 #ifdef BUILD_NDK
 	Joystick* mJoystick;

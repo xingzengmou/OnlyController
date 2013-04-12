@@ -22,7 +22,8 @@ int InputAdapter::init() {
 	mKeyManager = KeyManager::create();
 	mEventHub = EventHub::create();
 	mDeviceManager = DeviceManager::create();
-	
+	mEventHub->setInputAdapter(this);
+	memset(confFileName, 0, sizeof(confFileName));
 #ifdef BUILD_NDK
 	thread_exit = 0;
 #else
@@ -41,8 +42,8 @@ void *getEventThread(void *p) {
 	}
 	while (0 == mInputAdapter->thread_exit) {
 		memset(mInputAdapter->mEventBuffer, 0, mInputAdapter->EVENT_BUFFER_SIZE);
-		mInputAdapter->getEventHub()->getEvents(0, mInputAdapter->mEventBuffer, mInputAdapter->EVENT_BUFFER_SIZE);
-		mInputAdapter->processRawEventLocked(mInputAdapter->mEventBuffer);
+		mInputAdapter->getEventHub()->getEvents(0, mInputAdapter->mEventBuffer, mInputAdapter->EVENT_BUFFER_SIZE, mInputAdapter->confFileName);
+		mInputAdapter->processRawEventLocked(mInputAdapter->mEventBuffer, mInputAdapter->confFileName);
 	}
 	return NULL;
 }
@@ -53,15 +54,23 @@ void *monitorNotoifierThread(void *p) {
 		LOGE("[%s][%d] ==> mInputAdapter is NULL", __FUNCTION__, __LINE__);
 		return NULL;
 	}
-	mInputAdapter->getEventHub()->setInputAdapter(mInputAdapter);
 	while(0 == mInputAdapter->thread_exit) {
 		mInputAdapter->getEventHub()->readNotifyLocked();
 	}
 	return NULL;
 }
 
+void InputAdapter::openEventConfigFile(char *configFileName) {
+	LOGE("[%s][%d] ==> configfile = %s", __FUNCTION__, __LINE__, configFileName);
+	mDeviceManager->openEventConfigFile(configFileName);
+}
+
 void InputAdapter::deviceAdded(char *devName) {
 	mDeviceManager->deviceAdded(devName);
+}
+
+int InputAdapter::openDeviceLocked(char *devicePath) {
+	return this->mEventHub->openDeviceLocked(devicePath);
 }
 
 int InputAdapter::start() {
@@ -147,8 +156,8 @@ void InputAdapter::loopOnce() {
 #else
 	AutoMutex _l(mLock);
 	memset(mEventBuffer, 0, EVENT_BUFFER_SIZE);
-	mEventHub->getEvents(0, mEventBuffer, EVENT_BUFFER_SIZE);
-	processRawEventLocked(mEventBuffer);
+	mEventHub->getEvents(0, mEventBuffer, EVENT_BUFFER_SIZE, confFileName);
+	processRawEventLocked(mEventBuffer, confFileName);
 #endif
 }
 
@@ -157,15 +166,15 @@ void InputAdapter::dumpRawEvent(const RawEvent *event) {
 			__FUNCTION__, __LINE__, event->type, event->scanCode, event->value, event->deviceId);
 }
 
-void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer) {
+void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer, char *configFileName) {
 	for (size_t i = 0; i < eventBuffer->count; i ++) {
 #if DEBUG_SWITCH
 		dumpRawEvent(eventBuffer);
 #endif
 		switch (eventBuffer->type) {
 		case EV_KEY:
-			LOGE("[%s][%d] ==> processKeys", __FUNCTION__, __LINE__);
-			mKeyManager->processKeys(eventBuffer);
+			LOGE("[%s][%d] ==> processKeys code = %d  configFileName = %s", __FUNCTION__, __LINE__, eventBuffer->scanCode, configFileName);
+			mKeyManager->processKeys(eventBuffer, configFileName);
 			break;
 		case EV_ABS:
 			break;

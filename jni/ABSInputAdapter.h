@@ -3,6 +3,7 @@
 
 class ABSInputAdapter {
 public:
+	virtual void openEventConfigFile(char *configFileName) = 0;
 	virtual void deviceAdded(char *devName) = 0;
 };
 
