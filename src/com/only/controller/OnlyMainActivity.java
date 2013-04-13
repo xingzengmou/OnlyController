@@ -73,6 +73,8 @@ public class OnlyMainActivity extends Activity {
 	 */
 	private Dialog appsDialog;
 	private ListView appListView;
+	
+	private List<Map<String, Object>> listCache = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,7 @@ public class OnlyMainActivity extends Activity {
 		getViewHandles();
 		setViewListener();
 		newView();
+		if (listCache == null) listCache = new ArrayList<Map<String, Object>> ();
 		appsDialog = new Dialog(this);
 		appsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		appsDialog.setContentView(R.layout.view_app_list);
@@ -249,6 +252,12 @@ public class OnlyMainActivity extends Activity {
 				long arg3) {
 			// TODO Auto-generated method stub
 			Map<String, Object> map = (Map<String, Object>) arg1.getTag();
+			for (Map<String, Object> tmap : listCache) {
+				if (tmap.get("packageName").toString().equals(map.get("packageName").toString())) {
+					Toast.makeText(thiz, R.string.item_is_exited, Toast.LENGTH_LONG).show();
+					return;
+				}
+			}
 			mViewGameConfiguration.addGameView(map);
 		}
 	};

@@ -103,6 +103,7 @@ public final class R {
         public static final int hello_world=0x7f060002;
         public static final int ime_config_tv=0x7f060009;
         public static final int ime_valid_config=0x7f060010;
+        public static final int item_is_exited=0x7f06001f;
         public static final int key_config_btn=0x7f060004;
         public static final int key_file_name_tv=0x7f060006;
         public static final int key_file_state_left_bracket=0x7f06001b;

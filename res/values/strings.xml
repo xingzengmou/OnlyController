@@ -30,7 +30,8 @@
    	<string name="btn_delete_game">Remove Game All Config</string>
    	<string name="key_file_state_left_bracket">[</string>
    	<string name="key_file_state_right_bracket">]</string>
-   	<string name="tv_key_file_state_disable">已关闭</string>
-   	<string name="tv_key_file_state_enable">已打开</string>
+   	<string name="tv_key_file_state_disable">Disabled</string>
+   	<string name="tv_key_file_state_enable">Enabled</string>
+   	<string name="item_is_exited">Selected game configuration has existed</string>
 
 </resources>

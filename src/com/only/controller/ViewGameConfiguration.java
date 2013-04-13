@@ -1,5 +1,7 @@
 package com.only.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import android.app.Dialog;
@@ -16,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewGameConfiguration implements OnClickListener {
 	private static final String TAG = "ViewGameConfiguration";
@@ -25,12 +28,6 @@ public class ViewGameConfiguration implements OnClickListener {
 	private LinearLayout lyContent = null;
 	private View menuView = null;
 	private Dialog menuDialog =  null;
-	
-	/**
-	 * menuDialog subView
-	 * @param v
-	 * @param inflater
-	 */
 	
 	public ViewGameConfiguration (View v, LayoutInflater inflater) {
 		lyContent = (LinearLayout)v;

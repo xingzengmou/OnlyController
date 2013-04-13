@@ -26,5 +26,6 @@
    	<string name="btn_enable_touch_file_config">打开触摸配置</string>
    	<string name="btn_disable_touch_file_config">关闭触摸配置</string>
    	<string name="btn_delete_game">删除游戏配置</string>
+   	<string name="item_is_exited">该游戏配置已经存在</string>
 
 </resources>
