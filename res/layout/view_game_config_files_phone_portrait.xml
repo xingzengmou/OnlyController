@@ -11,8 +11,8 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 	    <ImageView android:id="@+id/icon_iv"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content"
+	        android:layout_height="70dp"
+	        android:layout_width="70dp"
 	        android:layout_margin="5dp"
 	        android:contentDescription="@string/app_name"
 	        android:background="@drawable/ic_launcher"/>
@@ -32,27 +32,52 @@
 	            android:layout_height="wrap_content">
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
+	                android:text="@string/key_file_state_left_bracket"
+	                android:textColor="@color/white_color" />
+	            <TextView android:id="@+id/tv_key_file_state"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/tv_key_file_state_disable"
+	                android:textColor="@color/color_red"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/key_file_state_right_bracket"
+	                android:textColor="@color/white_color" />
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
 	                android:text="@string/key_file_name_tv"
 	                android:textColor="@color/white_color" />
 	            <TextView android:id="@+id/key_file_name_tv"
 	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content" />
+	                android:layout_height="wrap_content"
+	                android:text="@string/no_key_file_name_tv" />
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="wrap_content"
 	            android:layout_height="wrap_content">
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/key_file_state_left_bracket"
+	                android:textColor="@color/white_color" />
+	            <TextView android:id="@+id/tv_touch_file_state"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/tv_key_file_state_disable"
+	                android:textColor="@color/color_red"/>
+	            <TextView android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="@string/key_file_state_right_bracket"
+	                android:textColor="@color/white_color" />
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:text="@string/touch_file_name_tv"
 	                android:textColor="@color/white_color" />
 	            <TextView android:id="@+id/touch_file_name_tv"
 	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content" />
+	                android:layout_height="wrap_content"
+	                android:text="@string/no_key_file_name_tv" />
 	        </LinearLayout>
 	    </LinearLayout>
 	
-	    <CheckBox android:id="@+id/checkbox_iv"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"/>
 	</LinearLayout>
 	
     <ImageView android:layout_width="match_parent"

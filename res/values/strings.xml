@@ -17,5 +17,20 @@
     <string name="root_successful">Root Successful</string>
     <string name="root_failed">Root Failedl</string>
     <string name="connect_inputjar_error">Connect OnlyInput Fialed</string>
+    <string name="ime_valid_config">Enable IME</string>
+    <string name="btn_add_game">Add Game</string>
+    <string name="no_key_file_name_tv">no config file yet</string>
+    <string name="btn_key_config">Map Keys</string>
+   	<string name="btn_touch_config">Map Touch</string>
+   	<string name="btn_edit_key_config">Edit Keys Map Config</string>
+   	<string name="btn_enable_key_file_config">Enable Keys Map Config</string>
+   	<string name="btn_disable_key_file_config">Disable Keys Map Config</string>
+   	<string name="btn_enable_touch_file_config">Enable Touch Map Config</string>
+   	<string name="btn_disable_touch_file_config">Disable Touch Map Config</string>
+   	<string name="btn_delete_game">Remove Game All Config</string>
+   	<string name="key_file_state_left_bracket">[</string>
+   	<string name="key_file_state_right_bracket">]</string>
+   	<string name="tv_key_file_state_disable">已关闭</string>
+   	<string name="tv_key_file_state_enable">已打开</string>
 
 </resources>

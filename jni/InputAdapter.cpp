@@ -74,7 +74,7 @@ int InputAdapter::openDeviceLocked(char *devicePath) {
 }
 
 int InputAdapter::start() {
-	mEventHub->scanInput();
+	//mEventHub->scanInput();
 #ifdef BUILD_NDK
 	pthread_t pid;
 	int ret = pthread_create(&pid, NULL, getEventThread, this);

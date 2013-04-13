@@ -5,5 +5,8 @@
     <color name="white_color">#ffffffff</color>
     <color name="focus_d_color">#ff0b93e1</color>
     <color name="focus_n_color">#ff282828</color>
+    <color name="block_focus_n_color">#ff000000</color>
+    <color name="blue_focus_d_color">#ff0b93e1</color>
+    <color name="color_red">#ffff0000</color>
     
 </resources>

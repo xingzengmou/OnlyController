@@ -1,9 +1,12 @@
 package com.only.jni;
 
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.only.config.KeyConfiguration;
+import com.only.controller.InputAdapterKeyEvent;
 import com.only.root.Root;
 
 import android.util.Log;
@@ -13,7 +16,7 @@ public class InputAdapter {
 	
 	private static List<KeyConfiguration> listKeyConfiguration = new ArrayList<KeyConfiguration>();
 	private static List<OnKeyListener> listOnKeyListener = new ArrayList<OnKeyListener>();
-	private static InputAdapterKeyEvent keyEvent;
+	private static InputAdapterKeyEvent keyEvent = new InputAdapterKeyEvent();
 	
 	public static void onInputAdapterKeyDown(int scanCode, int value, String configFileName) {
 		Log.e(TAG, "onInputAdapterKeyDown scancode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
@@ -22,9 +25,9 @@ public class InputAdapter {
 				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
 				keyEvent.scanCode = scanCode;
 				keyEvent.keyCode = kc.getKeyCode(scanCode);
-//				for (OnKeyListener listener : listOnKeyListener) {
-//					listener.onInputAdapterKeyDown(keyEvent);
-//				}
+				for (OnKeyListener listener : listOnKeyListener) {
+					listener.onInputAdapterKeyDown(keyEvent);
+				}
 				break;
 			}
 		}
@@ -37,9 +40,9 @@ public class InputAdapter {
 				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
 				keyEvent.scanCode = scanCode;
 				keyEvent.keyCode = kc.getKeyCode(scanCode);
-//				for (OnKeyListener listener : listOnKeyListener) {
-//					listener.onInputAdapterKeyUp(keyEvent);
-//				}
+				for (OnKeyListener listener : listOnKeyListener) {
+					listener.onInputAdapterKeyUp(keyEvent);
+				}
 				break;
 			}
 		}
@@ -51,9 +54,26 @@ public class InputAdapter {
 	
 	public static void onDeviceAdded(String devName) {
 		Log.e(TAG, "onDeviceAdded = " + devName);
-		String cmd = "busybox chmod 777 /dev/input/" + devName;
-		Log.e(TAG, "run a command = " + cmd);
-		Root.execCmmd(cmd);
+		final String devPath = devName;
+		final String cmd = "busybox chmod 777 " + devName;
+//		Log.e(TAG, "run a command = " + cmd);
+//		Root.execCmmd(cmd);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Root.chmod(cmd);
+				try {
+					Thread.sleep(1000);
+					openDeviceLocked(devPath);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}).start();
 	}
 	
 	public static void onOpenEventConfigFile(String configFileName) {
@@ -67,15 +87,11 @@ public class InputAdapter {
 	static {
 		System.loadLibrary("jni_input_adapter");
 	}
-	
+
 	public static native boolean init();
 	public static native boolean start();
 	public static native boolean stop();
-	
-	public class InputAdapterKeyEvent {
-		public int scanCode;
-		public int keyCode; 
-	}
+	public static native int openDeviceLocked(String devPath);
 	
 	public interface OnKeyListener {
 		public void onInputAdapterKeyDown(InputAdapterKeyEvent keyEvent);
@@ -85,6 +101,49 @@ public class InputAdapter {
 	public static void onSetKeyListener(OnKeyListener listener) {
 		if (listener != null) {
 			listOnKeyListener.add(listener);
+		}
+	}
+	
+	public static void openEvent() {
+		try {
+			Process process = Runtime.getRuntime().exec("ls /dev/input/");
+			final DataInputStream dis = new DataInputStream(process.getInputStream());
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					String line;
+					try {
+						line = dis.readLine();
+						while (line != null) {
+							Log.e(TAG, "openevent line = " + line);
+							if (line.contains("event")) {
+								String cmd = "busybox chmod 777 /dev/input/" + line;
+								Log.e(TAG, "cmd = " + cmd);
+//								Root.execCmmd(cmd);
+								Root.chmod(cmd);
+								Thread.sleep(1000);
+								if (openDeviceLocked("/dev/input/" + line) < 0) {
+									Log.e(TAG, "open /dev/intpu/" + line + " error");
+								}
+							}
+							line = dis.readLine();
+						}
+					} catch (IOException e) {
+						
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+			}).start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <LinearLayout android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="#ff282828">
+    <Button android:id="@+id/btn_key_config"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_key_config"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_touch_config"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_touch_config"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_edit_key_config"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_edit_key_config"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_enable_touch_file_config"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_enable_touch_file_config"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_enable_key_file_config"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_enable_key_file_config"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_delete_game"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_delete_game"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state"/>
+    </LinearLayout>
+
+</LinearLayout>

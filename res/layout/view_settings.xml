@@ -11,7 +11,29 @@
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ime_config_tv"
+            android:textSize="@dimen/text_size"
             android:textColor="@color/white_color" />
+    </LinearLayout>
+    
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:id="@+id/btn_ime_enable"
+        android:layout_margin="5dp">
+        <TextView android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ime_valid_config"
+            android:textColor="@color/white_color" 
+            android:textSize="@dimen/text_size"/>
+        <ImageView android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:id="@+id/iv_iem_enable"
+            android:background="@drawable/switch_off_contact"/>
     </LinearLayout>
     
     <ImageView android:layout_width="match_parent"

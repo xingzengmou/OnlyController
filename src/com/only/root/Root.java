@@ -18,10 +18,11 @@ public class Root {
 	private static FileOutputStream fos;
 	private static FileInputStream fis;
 	private static DataOutputStream dos = null;
+	private static Process process = null;
 	
 	public static boolean root() {
 		try {
-			Process process = Runtime.getRuntime().exec("su");
+			process = Runtime.getRuntime().exec("su");
 			dos = new DataOutputStream(process.getOutputStream());
 			DataInputStream dis = new DataInputStream(process.getInputStream());
 			dos.write("id \n".getBytes());
@@ -63,6 +64,17 @@ public class Root {
 		try {
 			fos.write(s.getBytes());
 			fos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static void chmod(String cmd) {
+		try {
+			cmd += " \n";
+			dos.write(cmd.getBytes());
+			dos.flush();	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

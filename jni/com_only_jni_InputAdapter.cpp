@@ -260,3 +260,14 @@ JNIEXPORT void JNICALL Java_com_only_jni_InputAdapter_getKey(JNIEnv *env, jclass
 	env->SetIntField(rawEvent, scanCode, keyEvent.scanCode);
 	env->SetIntField(rawEvent, value, keyEvent.value);
 }
+
+JNIEXPORT jint JNICALL
+Java_com_only_jni_InputAdapter_openDeviceLocked(JNIEnv *env, jclass clazz, jstring devPath) {
+	const char *dev_path;
+	dev_path = env->GetStringUTFChars(devPath, JNI_FALSE);
+	if (dev_path == NULL) {
+		LOGE("[%s][%d] ==> GetStringUTFChars to dev_path error", __FUNCTION__, __LINE__);
+		return -1;
+	}
+	return mInputAdapter->openDeviceLocked((char*)dev_path);
+}

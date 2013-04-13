@@ -15,5 +15,16 @@
     <string name="root_successful">成功获取超级权限</string>
     <string name="root_failed">获取超级权限失败</string>
    	<string name="connect_inputjar_error">连接OnlyInput失败</string>
+   	<string name="ime_valid_config">IME 开关</string>
+   	<string name="btn_add_game">添加游戏配置</string>
+   	<string name="no_key_file_name_tv">尚未配置</string>
+   	<string name="btn_key_config">配置按键映射</string>
+   	<string name="btn_touch_config">配置触摸映射</string>
+   	<string name="btn_edit_key_config">编辑按键映射配置</string>
+   	<string name="btn_enable_key_file_config">打开按键配置</string>
+   	<string name="btn_disable_key_file_config">关闭按键配置</string>
+   	<string name="btn_enable_touch_file_config">打开触摸配置</string>
+   	<string name="btn_disable_touch_file_config">关闭触摸配置</string>
+   	<string name="btn_delete_game">删除游戏配置</string>
 
 </resources>

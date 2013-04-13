@@ -18,10 +18,11 @@ Java_com_only_jni_InputAdapter_start(JNIEnv *env, jclass jzz);
 JNIEXPORT jboolean JNICALL
 Java_com_only_jni_InputAdapter_stop(JNIEnv *env, jclass jzz);
 
-
 JNIEXPORT void JNICALL
 Java_com_only_jni_InputAdapter_getKey(JNIEnv *env, jclass clazz, jobject rawEvent);
 
+JNIEXPORT jint JNICALL
+Java_com_only_jni_InputAdapter_openDeviceLocked(JNIEnv *env, jclass clazz, jstring devPath);
 #ifdef __cplusplus
 }
 #endif

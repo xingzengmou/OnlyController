@@ -11,6 +11,9 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int block_focus_n_color=0x7f040004;
+        public static final int blue_focus_d_color=0x7f040005;
+        public static final int color_red=0x7f040006;
         public static final int focus_d_color=0x7f040002;
         public static final int focus_n_color=0x7f040003;
         public static final int main_body_color=0x7f040000;
@@ -25,39 +28,59 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
+        public static final int text_size=0x7f050002;
     }
     public static final class drawable {
-        public static final int btn_d=0x7f020000;
-        public static final int btn_n=0x7f020001;
-        public static final int click_state=0x7f020002;
-        public static final int content_line=0x7f020003;
-        public static final int game_list_btn=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int line=0x7f020006;
+        public static final int btn_add_game_state=0x7f020000;
+        public static final int btn_d=0x7f020001;
+        public static final int btn_n=0x7f020002;
+        public static final int click_state=0x7f020003;
+        public static final int content_line=0x7f020004;
+        public static final int game_list_btn=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int line=0x7f020007;
+        public static final int switch_off_contact=0x7f020008;
+        public static final int switch_on_normal=0x7f020009;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000f;
-        public static final int app_name_tv=0x7f090008;
-        public static final int checkbox_iv=0x7f09000b;
-        public static final int game_config_files_ly=0x7f090001;
-        public static final int game_list_btn=0x7f090004;
-        public static final int icon_iv=0x7f090007;
-        public static final int ime_config_btn=0x7f09000e;
-        public static final int key_config_btn=0x7f090005;
-        public static final int key_config_ly=0x7f090002;
-        public static final int key_file_name_tv=0x7f090009;
-        public static final int key_name_tv=0x7f09000c;
-        public static final int map_key_name_tv=0x7f09000d;
-        public static final int settings_ly=0x7f090003;
-        public static final int settings_tv=0x7f090006;
+        public static final int action_settings=0x7f09001c;
+        public static final int app_name_tv=0x7f09000c;
+        public static final int btn_add_game=0x7f090001;
+        public static final int btn_delete_game=0x7f090018;
+        public static final int btn_edit_key_config=0x7f090015;
+        public static final int btn_enable_key_file_config=0x7f090017;
+        public static final int btn_enable_touch_file_config=0x7f090016;
+        public static final int btn_ime_enable=0x7f09001a;
+        public static final int btn_key_config=0x7f090013;
+        public static final int btn_touch_config=0x7f090014;
+        public static final int game_config_files_ly=0x7f090002;
+        public static final int game_list_btn=0x7f090005;
+        public static final int icon_iv=0x7f09000b;
+        public static final int ime_config_btn=0x7f090019;
+        public static final int iv_app_icon=0x7f090009;
+        public static final int iv_iem_enable=0x7f09001b;
+        public static final int key_config_btn=0x7f090006;
+        public static final int key_config_ly=0x7f090003;
+        public static final int key_file_name_tv=0x7f09000e;
+        public static final int key_name_tv=0x7f090011;
+        public static final int lv_apps=0x7f090008;
+        public static final int map_key_name_tv=0x7f090012;
+        public static final int settings_ly=0x7f090004;
+        public static final int settings_tv=0x7f090007;
         public static final int title_ly=0x7f090000;
-        public static final int touch_file_name_tv=0x7f09000a;
+        public static final int touch_file_name_tv=0x7f090010;
+        public static final int tv_app_name=0x7f09000a;
+        public static final int tv_key_file_state=0x7f09000d;
+        public static final int tv_touch_file_state=0x7f09000f;
     }
     public static final class layout {
         public static final int activity_only_main=0x7f030000;
-        public static final int view_game_config_files_phone_portrait=0x7f030001;
-        public static final int view_key_configuration=0x7f030002;
-        public static final int view_settings=0x7f030003;
+        public static final int view_app_list=0x7f030001;
+        public static final int view_app_list_content=0x7f030002;
+        public static final int view_game_config_files_phone_portrait=0x7f030003;
+        public static final int view_key_configuration=0x7f030004;
+        public static final int view_popwindow_operation=0x7f030005;
+        public static final int view_settings=0x7f030006;
     }
     public static final class menu {
         public static final int only_main=0x7f080000;
@@ -65,19 +88,34 @@ public final class R {
     public static final class string {
         public static final int action_settings=0x7f060001;
         public static final int app_name=0x7f060000;
+        public static final int btn_add_game=0x7f060011;
+        public static final int btn_delete_game=0x7f06001a;
+        public static final int btn_disable_key_file_config=0x7f060017;
+        public static final int btn_disable_touch_file_config=0x7f060019;
+        public static final int btn_edit_key_config=0x7f060015;
+        public static final int btn_enable_key_file_config=0x7f060016;
+        public static final int btn_enable_touch_file_config=0x7f060018;
+        public static final int btn_key_config=0x7f060013;
+        public static final int btn_touch_config=0x7f060014;
         public static final int connect_inputjar_error=0x7f06000f;
         public static final int external_starage_has_unmounted=0x7f06000b;
         public static final int game_list_btn=0x7f060003;
         public static final int hello_world=0x7f060002;
         public static final int ime_config_tv=0x7f060009;
+        public static final int ime_valid_config=0x7f060010;
         public static final int key_config_btn=0x7f060004;
         public static final int key_file_name_tv=0x7f060006;
+        public static final int key_file_state_left_bracket=0x7f06001b;
+        public static final int key_file_state_right_bracket=0x7f06001c;
         public static final int make_sdcard_input_jar_dir_error=0x7f06000c;
+        public static final int no_key_file_name_tv=0x7f060012;
         public static final int quit=0x7f06000a;
         public static final int root_failed=0x7f06000e;
         public static final int root_successful=0x7f06000d;
         public static final int settings_tv=0x7f060005;
         public static final int touch_file_name_tv=0x7f060007;
+        public static final int tv_key_file_state_disable=0x7f06001d;
+        public static final int tv_key_file_state_enable=0x7f06001e;
         public static final int unknown=0x7f060008;
     }
     public static final class style {
