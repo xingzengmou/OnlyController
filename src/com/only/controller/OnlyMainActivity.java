@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.only.controller.data.AppsDatabase;
 import com.only.inputjar.InputJar;
 import com.only.jni.InputAdapter;
 import com.only.net.socket.netSocket;
@@ -75,6 +76,7 @@ public class OnlyMainActivity extends Activity {
 	private ListView appListView;
 	
 	private List<Map<String, Object>> listCache = null;
+	private AppsDatabase mAppDatabase = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,8 @@ public class OnlyMainActivity extends Activity {
 		getViewHandles();
 		setViewListener();
 		newView();
-		if (listCache == null) listCache = new ArrayList<Map<String, Object>> ();
+		listCache = new ArrayList<Map<String, Object>> ();
+		mAppDatabase = new AppsDatabase(this, "appsdatabase", null, 1);
 		appsDialog = new Dialog(this);
 		appsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		appsDialog.setContentView(R.layout.view_app_list);
