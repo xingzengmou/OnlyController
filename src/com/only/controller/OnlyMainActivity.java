@@ -22,11 +22,13 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -88,6 +90,7 @@ public class OnlyMainActivity extends Activity {
 		newView();
 		listCache = new ArrayList<Map<String, Object>> ();
 		mAppDatabase = new AppsDatabase(this, "appsdatabase", null, 1);
+		loadDatabaseToListCache();
 		appsDialog = new Dialog(this);
 		appsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		appsDialog.setContentView(R.layout.view_app_list);
@@ -262,8 +265,30 @@ public class OnlyMainActivity extends Activity {
 				}
 			}
 			mViewGameConfiguration.addGameView(map);
+			listCache.add(map);
+			insertDatabase(map);
 		}
 	};
+	
+	private void insertDatabase(Map<String, Object> map) {
+		ContentValues cv = new ContentValues();
+		cv.put("package_name", map.get("packageName").toString());
+		mAppDatabase.getWritableDatabase().insert("app_list", null, cv);
+	}
+	
+	private void loadDatabaseToListCache() {
+		Cursor cursor = mAppDatabase.getReadableDatabase().rawQuery("select * from app_list", null);
+		if (cursor != null) {
+			while (cursor.moveToNext()) {
+				String packageName = cursor.getString(0);
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("packageName", packageName);
+				listCache.add(map);
+			}
+			cursor.close();
+			cursor = null;
+		}
+	}
 	
 	class AppsAdapter extends BaseAdapter {
 		private List<Map<String, Object>> list;
