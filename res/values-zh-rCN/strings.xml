@@ -27,5 +27,10 @@
    	<string name="btn_disable_touch_file_config">关闭触摸配置</string>
    	<string name="btn_delete_game">删除游戏配置</string>
    	<string name="item_is_exited">该游戏配置已经存在</string>
+   	<string name="key_view_configuration">按键映射配置</string>
+   	<string name="btn_save">保存</string>
+   	<string name="configuration_saved">配置文件已保存</string>
+   	<string name="yet_not_save_config">你还没保存配置，是否保存?</string>
+   	<string name="discard">不保存</string>
 
 </resources>

@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.only.controller.data.AppsDatabase;
+
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -29,12 +37,52 @@ public class ViewGameConfiguration implements OnClickListener {
 	private View menuView = null;
 	private Dialog menuDialog =  null;
 	
+	/**
+	 * the views for menudialog
+	 * @param v
+	 * @param inflater
+	 */
+	 private Button btnKeyMapConfiguration;
+	 private Button btnTouchMapConfiguration;
+	 private Button btnEnableKeyMap;
+	 private Button btnEnableTouchMap;
+	 private Button btnRemoveGame;
+	 
+	 private String packageLabel = "";
+	
 	public ViewGameConfiguration (View v, LayoutInflater inflater) {
 		lyContent = (LinearLayout)v;
 		this.inflater = inflater;
 		menuDialog = new Dialog(lyContent.getContext());
 		menuDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		menuDialog.setContentView(R.layout.view_popwindow_operation);
+		btnKeyMapConfiguration = (Button) menuDialog.findViewById(R.id.btn_edit_key_config);
+		btnTouchMapConfiguration = (Button) menuDialog.findViewById(R.id.btn_touch_config);
+		btnEnableKeyMap = (Button) menuDialog.findViewById(R.id.btn_enable_key_file_config);
+		btnEnableTouchMap = (Button) menuDialog.findViewById(R.id.btn_enable_touch_file_config);
+		btnRemoveGame = (Button)menuDialog.findViewById(R.id.btn_delete_game);
+		btnKeyMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
+		btnTouchMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
+		btnEnableKeyMap.setOnClickListener(menuDialogButtonOnClick);
+		btnKeyMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
+		btnRemoveGame.setOnClickListener(menuDialogButtonOnClick);
+	}
+	
+	public void loadGameViewFromDatabase(Object data, PackageManager pm) {
+		List<Map<String, Object>> ldb = (List<Map<String, Object>>) data;
+		List<PackageInfo> lpi = pm.getInstalledPackages(0);
+		for (PackageInfo pi : lpi) {
+			if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+				for (Map<String, Object> map : ldb) {
+					if (map.get("packageName").toString().equals(pi.applicationInfo.packageName)) {
+						map.put("icon", pi.applicationInfo.loadIcon(pm));
+						map.put("label", pi.applicationInfo.loadLabel(pm));
+						addGameView(map);
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	public void show() {
@@ -62,6 +110,25 @@ public class ViewGameConfiguration implements OnClickListener {
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
+		Map<String, Object> map = (Map<String, Object>) arg0.getTag();
+		packageLabel = map.get("label").toString();
 		menuDialog.show();
 	}
+	
+	private View.OnClickListener menuDialogButtonOnClick = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			if (v.equals(btnKeyMapConfiguration)) {
+				Intent intent = new Intent();
+				intent.setClass(lyContent.getContext(), ViewKeyConfiguration.class);
+				Bundle bundle = new Bundle();
+				bundle.putString("package_label", packageLabel);
+				intent.putExtras(bundle);
+				lyContent.getContext().startActivity(intent);
+			}
+			menuDialog.cancel();
+		}
+	};
 }

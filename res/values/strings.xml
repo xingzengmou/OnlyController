@@ -33,5 +33,10 @@
    	<string name="tv_key_file_state_disable">Disabled</string>
    	<string name="tv_key_file_state_enable">Enabled</string>
    	<string name="item_is_exited">Selected game configuration has existed</string>
+   	<string name="key_view_configuration">Key Map</string>
+   	<string name="btn_save">Save</string>
+   	<string name="configuration_saved">Configuration File Saved</string>
+   	<string name="yet_not_save_config">You have not save configuration file yet, do you save it ?</string>
+   	<string name="discard">Discard</string>
 
 </resources>

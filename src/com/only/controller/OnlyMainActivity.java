@@ -68,7 +68,7 @@ public class OnlyMainActivity extends Activity {
 	 * View for configuration
 	 */
 	private ViewGameConfiguration mViewGameConfiguration = null;
-	private ViewKeyConfiguration mViewKeyConfiguration = null;
+//	private ViewKeyConfiguration mViewKeyConfiguration = null;
 	private ViewSettings mViewSettings;
 	
 	/**
@@ -87,7 +87,6 @@ public class OnlyMainActivity extends Activity {
 		setContentView(R.layout.activity_only_main);
 		getViewHandles();
 		setViewListener();
-		newView();
 		listCache = new ArrayList<Map<String, Object>> ();
 		mAppDatabase = new AppsDatabase(this, "appsdatabase", null, 1);
 		loadDatabaseToListCache();
@@ -96,6 +95,8 @@ public class OnlyMainActivity extends Activity {
 		appsDialog.setContentView(R.layout.view_app_list);
 		appListView = (ListView) appsDialog.findViewById(R.id.lv_apps);
 		appListView.setOnItemClickListener(appsListViewOnItemClickListener);
+		
+		newView();
 		
 		if (Root.root()) {
 			Toast.makeText(this, R.string.root_successful, Toast.LENGTH_SHORT).show();
@@ -159,10 +160,11 @@ public class OnlyMainActivity extends Activity {
 	
 	private void newView() {
 		mViewGameConfiguration = new ViewGameConfiguration(lyGameConfigFiles, this.getLayoutInflater());
-		mViewKeyConfiguration = new ViewKeyConfiguration(lyKeyConfig, this.getLayoutInflater());
+//		mViewKeyConfiguration = new ViewKeyConfiguration(lyKeyConfig, this.getLayoutInflater());
 		mViewSettings = new ViewSettings(lySettings, this.getLayoutInflater());
+		mViewGameConfiguration.loadGameViewFromDatabase(listCache, this.getPackageManager());
 		mViewGameConfiguration.show();
-		mViewKeyConfiguration.hide();
+//		mViewKeyConfiguration.hide();
 		mViewSettings.hide();
 	}
 	
@@ -177,7 +179,7 @@ public class OnlyMainActivity extends Activity {
 				switchBackground(btnKeyConfig, false);
 				switchBackground(btnSettings, false);
 				if (mViewGameConfiguration != null) {
-					mViewKeyConfiguration.hide();
+//					mViewKeyConfiguration.hide();
 					mViewSettings.hide();
 					mViewGameConfiguration.show();
 				}
@@ -185,18 +187,18 @@ public class OnlyMainActivity extends Activity {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, true);
 				switchBackground(btnSettings, false);
-				if (mViewKeyConfiguration != null) {
-					mViewGameConfiguration.hide();
-					mViewKeyConfiguration.show();
-					mViewSettings.hide();
-				}
+//				if (mViewKeyConfiguration != null) {
+//					mViewGameConfiguration.hide();
+//					mViewKeyConfiguration.show();
+//					mViewSettings.hide();
+//				}
 			} else if (v.equals(btnSettings)) {
 				switchBackground(btnGameConfigFiles, false);
 				switchBackground(btnKeyConfig, false);
 				switchBackground(btnSettings, true);
 				if (mViewSettings != null) {
 					mViewGameConfiguration.hide();
-					mViewKeyConfiguration.hide();
+//					mViewKeyConfiguration.hide();
 					mViewSettings.show();
 				}
 			} else if (v.equals(btnAddGame)) {
@@ -235,17 +237,18 @@ public class OnlyMainActivity extends Activity {
 		List<PackageInfo> listPI = pm.getInstalledPackages(0);
 		List<Map<String, Object>> listData = new ArrayList<Map<String, Object>>();
 		for (PackageInfo pi : listPI) {
-			if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) continue;
-			Map<String, Object> map = new HashMap<String, Object>();
-			Drawable icon = pi.applicationInfo.loadIcon(pm);
-			String label = pi.applicationInfo.loadLabel(pm).toString();
-			String packageName = pi.applicationInfo.packageName;
-			map.put("icon", icon);
-			map.put("label", label);
-			map.put("packageName", packageName);
-			listData.add(map);
+			if ((pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				Drawable icon = pi.applicationInfo.loadIcon(pm);
+				String label = pi.applicationInfo.loadLabel(pm).toString();
+				String packageName = pi.applicationInfo.packageName;
+				map.put("icon", icon);
+				map.put("label", label);
+				map.put("packageName", packageName);
+				listData.add(map);
+				Log.e(TAG, "loadallapps packagename = " + packageName);
+			}
 		}
-		
 		AppsAdapter adapter = new AppsAdapter(listData);
 		appListView.setAdapter(adapter);
 		appsDialog.show();
@@ -283,6 +286,7 @@ public class OnlyMainActivity extends Activity {
 				String packageName = cursor.getString(0);
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("packageName", packageName);
+				Log.e(TAG, "database packagename = " + packageName);
 				listCache.add(map);
 			}
 			cursor.close();
@@ -321,14 +325,14 @@ public class OnlyMainActivity extends Activity {
 			if (view == null) {
 				LayoutInflater inflater = (LayoutInflater) arg2.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = (View) inflater.inflate(R.layout.view_app_list_content, null);
-				ViewHandle mViewHandle;
-				mViewHandle = new ViewHandle();
-				mViewHandle.ivIcon = (ImageView) view.findViewById(R.id.iv_app_icon);
-				mViewHandle.tvLabel = (TextView) view.findViewById(R.id.tv_app_name);
-				mViewHandle.ivIcon.setBackgroundDrawable((Drawable) list.get(arg0).get("icon"));
-				mViewHandle.tvLabel.setText(list.get(arg0).get("label").toString());
-				view.setTag(list.get(arg0));
 			}
+			ViewHandle mViewHandle;
+			mViewHandle = new ViewHandle();
+			mViewHandle.ivIcon = (ImageView) view.findViewById(R.id.iv_app_icon);
+			mViewHandle.tvLabel = (TextView) view.findViewById(R.id.tv_app_name);
+			mViewHandle.ivIcon.setBackgroundDrawable((Drawable) list.get(arg0).get("icon"));
+			mViewHandle.tvLabel.setText(list.get(arg0).get("packageName").toString());
+			view.setTag(list.get(arg0));
 			
 			return view;
 		}
