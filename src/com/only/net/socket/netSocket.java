@@ -32,14 +32,22 @@ public class netSocket {
 		return true;
 	}
 	
-	public static void send(String content) {
-		pw.println(content);
-		pw.flush();
-		try {
-			Log.e(TAG, "get from service = " + dis.readLine());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void send(final String content) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				pw.println(content);
+				pw.flush();
+				try {
+					Log.e(TAG, "get from service = " + dis.readLine());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}).start();
 	}
 }

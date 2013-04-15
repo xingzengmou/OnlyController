@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.only.controller.data.AppsDatabase;
+import com.only.controller.data.GlobalData;
+import com.only.core.ControllerCore;
 import com.only.inputjar.InputJar;
 import com.only.jni.InputAdapter;
 import com.only.net.socket.netSocket;
@@ -25,6 +27,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -77,7 +80,6 @@ public class OnlyMainActivity extends Activity {
 	private Dialog appsDialog;
 	private ListView appListView;
 	
-	private List<Map<String, Object>> listCache = null;
 	private AppsDatabase mAppDatabase = null;
 
 	@Override
@@ -88,7 +90,6 @@ public class OnlyMainActivity extends Activity {
 		setContentView(R.layout.activity_only_main);
 		getViewHandles();
 		setViewListener();
-		listCache = new ArrayList<Map<String, Object>> ();
 		mAppDatabase = new AppsDatabase(this, "appsdatabase", null, 1);
 		loadDatabaseToListCache();
 		appsDialog = new Dialog(this);
@@ -139,6 +140,8 @@ public class OnlyMainActivity extends Activity {
 			});
 			b.show();
 		}
+		
+		ControllerCore.start();
 	}
 
 	private void getViewHandles() {
@@ -163,7 +166,7 @@ public class OnlyMainActivity extends Activity {
 		mViewGameConfiguration = new ViewGameConfiguration(lyGameConfigFiles, this.getLayoutInflater());
 //		mViewKeyConfiguration = new ViewKeyConfiguration(lyKeyConfig, this.getLayoutInflater());
 		mViewSettings = new ViewSettings(lySettings, this.getLayoutInflater());
-		mViewGameConfiguration.loadGameViewFromDatabase(listCache, this.getPackageManager());
+		mViewGameConfiguration.loadGameViewFromDatabase(GlobalData.listCache, this.getPackageManager());
 		mViewGameConfiguration.show();
 //		mViewKeyConfiguration.hide();
 		mViewSettings.hide();
@@ -262,14 +265,14 @@ public class OnlyMainActivity extends Activity {
 				long arg3) {
 			// TODO Auto-generated method stub
 			Map<String, Object> map = (Map<String, Object>) arg1.getTag();
-			for (Map<String, Object> tmap : listCache) {
+			for (Map<String, Object> tmap : GlobalData.listCache) {
 				if (tmap.get("packageName").toString().equals(map.get("packageName").toString())) {
 					Toast.makeText(thiz, R.string.item_is_exited, Toast.LENGTH_LONG).show();
 					return;
 				}
 			}
 			mViewGameConfiguration.addGameView(map);
-			listCache.add(map);
+			GlobalData.listCache.add(map);
 			insertDatabase(map);
 		}
 	};
@@ -288,7 +291,7 @@ public class OnlyMainActivity extends Activity {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("packageName", packageName);
 				Log.e(TAG, "database packagename = " + packageName);
-				listCache.add(map);
+				GlobalData.listCache.add(map);
 			}
 			cursor.close();
 			cursor = null;
@@ -344,5 +347,6 @@ public class OnlyMainActivity extends Activity {
 		}
 		
 	}
+	
 }
  

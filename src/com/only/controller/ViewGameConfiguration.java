@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.only.controller.data.AppsDatabase;
+import com.only.controller.data.GlobalData;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -49,6 +52,7 @@ public class ViewGameConfiguration implements OnClickListener {
 	 private Button btnRemoveGame;
 	 
 	 private String packageLabel = "";
+	 private String packageNameXML = "";
 	
 	public ViewGameConfiguration (View v, LayoutInflater inflater) {
 		lyContent = (LinearLayout)v;
@@ -112,6 +116,7 @@ public class ViewGameConfiguration implements OnClickListener {
 		// TODO Auto-generated method stub
 		Map<String, Object> map = (Map<String, Object>) arg0.getTag();
 		packageLabel = map.get("label").toString();
+		packageNameXML = map.get("packageName").toString();
 		menuDialog.show();
 	}
 	
@@ -125,10 +130,19 @@ public class ViewGameConfiguration implements OnClickListener {
 				intent.setClass(lyContent.getContext(), ViewKeyConfiguration.class);
 				Bundle bundle = new Bundle();
 				bundle.putString("package_label", packageLabel);
+				bundle.putString("packageName", packageNameXML);
 				intent.putExtras(bundle);
 				lyContent.getContext().startActivity(intent);
 			}
 			menuDialog.cancel();
 		}
 	};
+	
+	private void loadKeyMapConfigurationToCache() {
+		SharedPreferences sp = lyContent.getContext().getSharedPreferences(packageNameXML, Context.MODE_PRIVATE);
+		for (int i = 0; i < GlobalData.keyAppName.length; i ++) {
+			GlobalData.keyMapCache.put(GlobalData.keyAppName[i], sp.getString(GlobalData.keyAppName[i], lyContent.getContext().getString(R.string.unknown)));
+			GlobalData.intKeyMapCache.put(GlobalData.keyAppName[i] + "_INT", sp.getInt(GlobalData.keyAppName[i] + "_INT", 0));
+		}
+	}
 }
