@@ -52,6 +52,7 @@
 	                android:layout_height="wrap_content"
 	                android:ellipsize="end"
 	                android:singleLine="true"
+	                android:textColor="@color/tip_color"
 	                android:text="@string/no_key_file_name_tv" />
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="wrap_content"
@@ -78,6 +79,7 @@
 	                android:layout_height="wrap_content"
 	                android:ellipsize="end"
 	                android:singleLine="true"
+	                android:textColor="@color/tip_color"
 	                android:text="@string/no_key_file_name_tv" />
 	        </LinearLayout>
 	    </LinearLayout>

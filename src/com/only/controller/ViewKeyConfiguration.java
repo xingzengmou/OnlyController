@@ -2,14 +2,17 @@ package com.only.controller;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,10 +34,13 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 	private boolean configurationSaved = true;
 	private SharedPreferences sp;
 	private Editor editor;
+	private View clickView;
+	private InputKeyDialog requestInputKeyDialog;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		this.thiz = this;
 		setContentView(R.layout.activity_key_view);
 		lyContent = (LinearLayout) this.findViewById(R.id.key_config_ly);
@@ -49,6 +55,10 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 		addView();
 		sp = this.getSharedPreferences("key_map", Context.MODE_PRIVATE);
 		editor = sp.edit();
+		InputKeyDialog.Builder b = new InputKeyDialog.Builder(this);
+		b.setMessage(R.string.please_input_key);
+		b.setPositiveButton(R.string.cancel, null);
+		requestInputKeyDialog = (InputKeyDialog)b.create();
 	}
 	
 	public void addView() {
@@ -129,6 +139,9 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 		configurationSaved = false;
 		if (arg0.equals(btnSave)) {
 			saveConfiguration();
+		} else {
+			clickView = arg0;
+			requestInputKeyDialog.show();
 		}
 	}
 	
@@ -167,7 +180,32 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 			});
 			b.show();
 			return true;
+		} else if (!configurationSaved) {
+			keyMapValueTv = (TextView) clickView.findViewById(R.id.map_key_name_tv);
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_0:
+				
+				break;
+			}
+			requestInputKeyDialog.cancel();
+			Log.e(TAG, "onkeyupfsdfsdf keycode = " + keyCode);
 		}
 		return super.onKeyUp(keyCode, event);
 	}
+	
+	
+	class InputKeyDialog extends AlertDialog {
+
+		protected InputKeyDialog(Context context) {
+			super(context);
+			// TODO Auto-generated constructor stub
+		}
+		
+		@Override
+		public boolean onKeyUp(int keyCode, KeyEvent event) {
+			Log.e(TAG, "INPUT DIALOG KEY KEYCODE = " + keyCode);
+			return super.onKeyUp(keyCode, event);
+		}
+	}
+	
 }

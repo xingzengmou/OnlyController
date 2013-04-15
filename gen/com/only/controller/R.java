@@ -17,6 +17,7 @@ public final class R {
         public static final int focus_d_color=0x7f040002;
         public static final int focus_n_color=0x7f040003;
         public static final int main_body_color=0x7f040000;
+        public static final int tip_color=0x7f040007;
         public static final int white_color=0x7f040001;
     }
     public static final class dimen {
@@ -100,6 +101,7 @@ public final class R {
         public static final int btn_key_config=0x7f060013;
         public static final int btn_save=0x7f060021;
         public static final int btn_touch_config=0x7f060014;
+        public static final int cancel=0x7f060026;
         public static final int configuration_saved=0x7f060022;
         public static final int connect_inputjar_error=0x7f06000f;
         public static final int discard=0x7f060024;
@@ -116,6 +118,7 @@ public final class R {
         public static final int key_view_configuration=0x7f060020;
         public static final int make_sdcard_input_jar_dir_error=0x7f06000c;
         public static final int no_key_file_name_tv=0x7f060012;
+        public static final int please_input_key=0x7f060025;
         public static final int quit=0x7f06000a;
         public static final int root_failed=0x7f06000e;
         public static final int root_successful=0x7f06000d;

@@ -32,5 +32,7 @@
    	<string name="configuration_saved">配置文件已保存</string>
    	<string name="yet_not_save_config">你还没保存配置，是否保存?</string>
    	<string name="discard">不保存</string>
+   	<string name="please_input_key">请输入你想要的按键</string>
+   	<string name="cancel">取消</string>
 
 </resources>

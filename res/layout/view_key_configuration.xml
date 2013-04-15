@@ -17,6 +17,7 @@
 		<TextView android:id="@+id/map_key_name_tv"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
+		    android:textColor="@color/tip_color"
 		    android:text="@string/unknown" />
 	</LinearLayout>
 	<LinearLayout android:layout_width="match_parent"

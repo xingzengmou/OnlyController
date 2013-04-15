@@ -83,6 +83,7 @@ public class OnlyMainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		thiz = this;
 		setContentView(R.layout.activity_only_main);
 		getViewHandles();

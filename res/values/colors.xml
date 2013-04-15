@@ -8,5 +8,6 @@
     <color name="block_focus_n_color">#ff000000</color>
     <color name="blue_focus_d_color">#ff0b93e1</color>
     <color name="color_red">#ffff0000</color>
+    <color name="tip_color">#ff969696</color>
     
 </resources>

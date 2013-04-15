@@ -38,5 +38,7 @@
    	<string name="configuration_saved">Configuration File Saved</string>
    	<string name="yet_not_save_config">You have not save configuration file yet, do you save it ?</string>
    	<string name="discard">Discard</string>
+   	<string name="please_input_key">Please Any Key</string>
+   	<string name="cancel">Cancel</string>
 
 </resources>
