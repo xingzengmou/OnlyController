@@ -61,8 +61,10 @@ public class Root {
 	
 	public static void execCmmd(String cmd) {
 		String s = cmd + " \r";
+		Log.e(TAG, "execCmmd = " + s + " fos = " + fos);
 		try {
-			fos.write(s.getBytes());
+			byte[] cmdByte = s.getBytes();
+			fos.write(cmdByte);
 			fos.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
