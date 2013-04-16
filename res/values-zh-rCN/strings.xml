@@ -34,5 +34,11 @@
    	<string name="discard">不保存</string>
    	<string name="please_input_key">请输入你想要的按键</string>
    	<string name="cancel">取消</string>
+   	<string name="system_initing">系统初始化...</string>
+   	<string name="invalid_joystick_area">无效的摇杆区域</string>
+    <string name="left_joystick">左摇杆区域</string>
+    <string name="right_joystick">右摇杆区域</string>
+    <string name="has_left_joystick">左摇杆区域已绘制，不可重绘</string>
+    <string name="has_right_joystick">右摇杆区域已绘制，不可重绘</string>
 
 </resources>

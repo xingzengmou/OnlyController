@@ -141,5 +141,6 @@ public class GlobalData {
 	public static Map<String, String> keyMapCache = new HashMap<String, String>();
 	public static Map<String, Integer> intKeyMapCache = new HashMap<String, Integer>();
 	public static List<Map<String, Object>> listCache = new ArrayList<Map<String, Object>> ();
-	public static String currentConfigurationXML = "";
+	public static String currentConfigurationXML = "null";
+	public static int joystickAreaCheckKey = KeyEvent.KEYCODE_VOLUME_UP; //Joystick区域确认按键
 }

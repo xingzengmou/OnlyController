@@ -126,6 +126,7 @@ public class ViewGameConfiguration implements OnClickListener {
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
 			if (v.equals(btnKeyMapConfiguration)) {
+				loadKeyMapConfigurationToCache();
 				Intent intent = new Intent();
 				intent.setClass(lyContent.getContext(), ViewKeyConfiguration.class);
 				Bundle bundle = new Bundle();

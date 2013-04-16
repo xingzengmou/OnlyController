@@ -175,7 +175,7 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		Log.e(TAG, "keyCode = " + keyCode); 
+		Log.e(TAG, "keyCode = " + keyCode + " configurationSaved = " + configurationSaved); 
 		if (keyCode == KeyEvent.KEYCODE_BACK && !configurationSaved) {
 			AlertDialog.Builder b = new AlertDialog.Builder(this);
 			b.setMessage(R.string.yet_not_save_config);
@@ -196,10 +196,12 @@ public class ViewKeyConfiguration extends Activity implements OnClickListener {
 					thiz.finish();
 				}
 			});
-			b.show();
+			AlertDialog d = b.create();
+			d.setCanceledOnTouchOutside(false);
+			d.show();
 			return true;
 		}
-		return true;
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	

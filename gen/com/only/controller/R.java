@@ -40,11 +40,12 @@ public final class R {
         public static final int game_list_btn=0x7f020005;
         public static final int ic_launcher=0x7f020006;
         public static final int line=0x7f020007;
-        public static final int switch_off_contact=0x7f020008;
-        public static final int switch_on_normal=0x7f020009;
+        public static final int selector_dialog_bg=0x7f020008;
+        public static final int switch_off_contact=0x7f020009;
+        public static final int switch_on_normal=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f09001d;
+        public static final int action_settings=0x7f09001e;
         public static final int app_name_tv=0x7f09000e;
         public static final int btn_add_game=0x7f090004;
         public static final int btn_delete_game=0x7f090019;
@@ -68,6 +69,7 @@ public final class R {
         public static final int map_key_name_tv=0x7f090014;
         public static final int settings_ly=0x7f090006;
         public static final int settings_tv=0x7f090009;
+        public static final int sv_touch=0x7f09001d;
         public static final int title_ly=0x7f090000;
         public static final int touch_file_name_tv=0x7f090012;
         public static final int tv_app_name=0x7f09000c;
@@ -84,6 +86,7 @@ public final class R {
         public static final int view_key_configuration=0x7f030005;
         public static final int view_popwindow_operation=0x7f030006;
         public static final int view_settings=0x7f030007;
+        public static final int view_touch_configuration=0x7f030008;
     }
     public static final class menu {
         public static final int only_main=0x7f080000;
@@ -107,22 +110,28 @@ public final class R {
         public static final int discard=0x7f060024;
         public static final int external_starage_has_unmounted=0x7f06000b;
         public static final int game_list_btn=0x7f060003;
+        public static final int has_left_joystick=0x7f06002b;
+        public static final int has_right_joystick=0x7f06002c;
         public static final int hello_world=0x7f060002;
         public static final int ime_config_tv=0x7f060009;
         public static final int ime_valid_config=0x7f060010;
+        public static final int invalid_joystick_area=0x7f060028;
         public static final int item_is_exited=0x7f06001f;
         public static final int key_config_btn=0x7f060004;
         public static final int key_file_name_tv=0x7f060006;
         public static final int key_file_state_left_bracket=0x7f06001b;
         public static final int key_file_state_right_bracket=0x7f06001c;
         public static final int key_view_configuration=0x7f060020;
+        public static final int left_joystick=0x7f060029;
         public static final int make_sdcard_input_jar_dir_error=0x7f06000c;
         public static final int no_key_file_name_tv=0x7f060012;
         public static final int please_input_key=0x7f060025;
         public static final int quit=0x7f06000a;
+        public static final int right_joystick=0x7f06002a;
         public static final int root_failed=0x7f06000e;
         public static final int root_successful=0x7f06000d;
         public static final int settings_tv=0x7f060005;
+        public static final int system_initing=0x7f060027;
         public static final int touch_file_name_tv=0x7f060007;
         public static final int tv_key_file_state_disable=0x7f06001d;
         public static final int tv_key_file_state_enable=0x7f06001e;
@@ -156,5 +165,6 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f070001;
+        public static final int selectorDialog=0x7f070002;
     }
 }

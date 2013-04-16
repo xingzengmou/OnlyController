@@ -40,5 +40,11 @@
    	<string name="discard">Discard</string>
    	<string name="please_input_key">Please Any Key</string>
    	<string name="cancel">Cancel</string>
+   	<string name="system_initing">System Initializing ...</string>
+   	<string name="invalid_joystick_area">Invalid joystick area</string>
+    <string name="left_joystick">Left Joystick</string>
+    <string name="right_joystick">Right Joystick</string>
+    <string name="has_left_joystick">Left Joystick has drew</string>
+    <string name="has_right_joystick">right Joystick has drew</string>
 
 </resources>

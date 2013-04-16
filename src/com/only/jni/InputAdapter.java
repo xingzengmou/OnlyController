@@ -7,16 +7,22 @@ import java.util.List;
 
 import com.only.config.KeyConfiguration;
 import com.only.controller.InputAdapterKeyEvent;
+import com.only.core.EventService.EventHandler;
 import com.only.root.Root;
 
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
  
 public class InputAdapter {
 	private static final String TAG = "InputAdapter";
-	
 	private static List<KeyConfiguration> listKeyConfiguration = new ArrayList<KeyConfiguration>();
 	private static List<OnKeyListener> listOnKeyListener = new ArrayList<OnKeyListener>();
 	private static InputAdapterKeyEvent keyEvent = new InputAdapterKeyEvent();
+	private static Context context;
+	private static EventHandler mHandler;
 	
 	public static void onInputAdapterKeyDown(int scanCode, int value, String configFileName) {
 		Log.e(TAG, "onInputAdapterKeyDown scancode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
@@ -25,9 +31,7 @@ public class InputAdapter {
 				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
 				keyEvent.scanCode = scanCode;
 				keyEvent.keyCode = kc.getKeyCode(scanCode);
-				for (OnKeyListener listener : listOnKeyListener) {
-					listener.onInputAdapterKeyDown(keyEvent);
-				}
+				if (mHandler != null) mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_DOWN, keyEvent));
 				break;
 			}
 		}
@@ -40,9 +44,7 @@ public class InputAdapter {
 				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
 				keyEvent.scanCode = scanCode;
 				keyEvent.keyCode = kc.getKeyCode(scanCode);
-				for (OnKeyListener listener : listOnKeyListener) {
-					listener.onInputAdapterKeyUp(keyEvent);
-				}
+				if (mHandler != null) mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_UP, keyEvent));
 				break;
 			}
 		}
@@ -88,6 +90,10 @@ public class InputAdapter {
 		System.loadLibrary("jni_input_adapter");
 	}
 
+	public static void setHandler(EventHandler handler) {
+		mHandler = handler;
+	}
+	
 	public static native boolean init();
 	public static native boolean start();
 	public static native boolean stop();

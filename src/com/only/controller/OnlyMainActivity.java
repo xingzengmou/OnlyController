@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.only.controller.data.AppsDatabase;
 import com.only.controller.data.GlobalData;
-import com.only.core.ControllerCore;
+import com.only.core.EventService;
 import com.only.inputjar.InputJar;
 import com.only.jni.InputAdapter;
 import com.only.net.socket.netSocket;
@@ -27,6 +27,7 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -51,6 +52,10 @@ import android.widget.Toast;
 public class OnlyMainActivity extends Activity {
 	private static final String TAG = "OnlyMainActivity";
 	private static final int MSG_CONNECT_INPUT_JAR_FAILED = 0x01;
+	private static final int MSG_ROOT_FAILED = 0x02;
+	private static final int MSG_ROOTED = 0x03;
+	private static final int MSG_INPUTJAR_CONNECTED = 0x04;
+
 	/**
 	 * Buttons define
 	 */
@@ -78,6 +83,7 @@ public class OnlyMainActivity extends Activity {
 	 * apps Dialog
 	 */
 	private Dialog appsDialog;
+	private AlertDialog waitTipDialog;
 	private ListView appListView;
 	
 	private AppsDatabase mAppDatabase = null;
@@ -97,51 +103,11 @@ public class OnlyMainActivity extends Activity {
 		appsDialog.setContentView(R.layout.view_app_list);
 		appListView = (ListView) appsDialog.findViewById(R.id.lv_apps);
 		appListView.setOnItemClickListener(appsListViewOnItemClickListener);
-		
 		newView();
-		
-		if (Root.root()) {
-			Toast.makeText(this, R.string.root_successful, Toast.LENGTH_SHORT).show();
-			if (InputJar.run(this)) {
-				InputAdapter.init();
-				InputAdapter.openEvent();
-				InputAdapter.start();
-			}
-			
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					try {
-						Thread.sleep(5000);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					if (!netSocket.connectService()) {
-						mHandler.sendEmptyMessage(MSG_CONNECT_INPUT_JAR_FAILED);
-					} else {
-							netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
-					}
-				}
-				
-			}).start();
-		} else {
-			//Toast.makeText(this, R.string.root_failed, Toast.LENGTH_SHORT).show();
-			AlertDialog.Builder b = new AlertDialog.Builder(thiz);
-			b.setMessage(R.string.root_failed);
-			b.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					thiz.finish();
-				}
-			});
-			b.show();
-		}
-		
-		ControllerCore.start();
+		loadKeyMapConfigurationToCache();
+		EventService.setActivity(this);
+		Intent intent = new Intent(this, EventService.class);
+		this.startService(intent);
 	}
 
 	private void getViewHandles() {
@@ -218,6 +184,7 @@ public class OnlyMainActivity extends Activity {
 	
 	private Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
+			if (waitTipDialog != null) waitTipDialog.cancel();
 			switch (msg.what) {
 			case MSG_CONNECT_INPUT_JAR_FAILED:
 				AlertDialog.Builder b = new AlertDialog.Builder(thiz);
@@ -231,6 +198,26 @@ public class OnlyMainActivity extends Activity {
 					}
 				});
 				b.show();
+				break;
+			case MSG_ROOT_FAILED:
+				AlertDialog.Builder b1 = new AlertDialog.Builder(thiz);
+				b1.setMessage(R.string.root_failed);
+				b1.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						thiz.finish();
+					}
+				});
+				b1.show();
+				break;
+			case MSG_ROOTED:
+				Toast.makeText(thiz, R.string.root_successful, Toast.LENGTH_SHORT).show();
+				break;
+			case MSG_INPUTJAR_CONNECTED:
+//				ControllerCore.start(thiz);
+				Log.e(TAG, "controllercore.start");
 				break;
 			}
 		}
@@ -335,7 +322,7 @@ public class OnlyMainActivity extends Activity {
 			mViewHandle.ivIcon = (ImageView) view.findViewById(R.id.iv_app_icon);
 			mViewHandle.tvLabel = (TextView) view.findViewById(R.id.tv_app_name);
 			mViewHandle.ivIcon.setBackgroundDrawable((Drawable) list.get(arg0).get("icon"));
-			mViewHandle.tvLabel.setText(list.get(arg0).get("packageName").toString());
+			mViewHandle.tvLabel.setText(list.get(arg0).get("label").toString());
 			view.setTag(list.get(arg0));
 			
 			return view;
@@ -347,6 +334,12 @@ public class OnlyMainActivity extends Activity {
 		}
 		
 	}
-	
+
+	private void loadKeyMapConfigurationToCache() {
+		for (int i = 0; i < GlobalData.keyAppName.length; i ++) {
+			GlobalData.keyMapCache.put(GlobalData.keyAppName[i], this.getString(R.string.unknown));
+			GlobalData.intKeyMapCache.put(GlobalData.keyAppName[i] + "_INT", 0);
+		}
+	}
 }
  
