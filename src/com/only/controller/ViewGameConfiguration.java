@@ -8,6 +8,7 @@ import com.only.controller.data.AppsDatabase;
 import com.only.controller.data.GlobalData;
 
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,6 +50,7 @@ public class ViewGameConfiguration implements OnClickListener {
 	 private Button btnTouchMapConfiguration;
 	 private Button btnEnableKeyMap;
 	 private Button btnEnableTouchMap;
+	 private Button btnOpenGame;
 	 private Button btnRemoveGame;
 	 
 	 private String packageLabel = "";
@@ -64,11 +66,13 @@ public class ViewGameConfiguration implements OnClickListener {
 		btnTouchMapConfiguration = (Button) menuDialog.findViewById(R.id.btn_touch_config);
 		btnEnableKeyMap = (Button) menuDialog.findViewById(R.id.btn_enable_key_file_config);
 		btnEnableTouchMap = (Button) menuDialog.findViewById(R.id.btn_enable_touch_file_config);
+		btnOpenGame = (Button) menuDialog.findViewById(R.id.btn_open_game);
 		btnRemoveGame = (Button)menuDialog.findViewById(R.id.btn_delete_game);
 		btnKeyMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
 		btnTouchMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
 		btnEnableKeyMap.setOnClickListener(menuDialogButtonOnClick);
 		btnKeyMapConfiguration.setOnClickListener(menuDialogButtonOnClick);
+		btnOpenGame.setOnClickListener(menuDialogButtonOnClick);
 		btnRemoveGame.setOnClickListener(menuDialogButtonOnClick);
 	}
 	
@@ -102,7 +106,9 @@ public class ViewGameConfiguration implements OnClickListener {
 		TextView tvAppName = (TextView) view.findViewById(R.id.app_name_tv);
 		tvAppName.setText(map.get("label").toString());
 		TextView tvKeyConfig = (TextView) view.findViewById(R.id.key_file_name_tv);
-		tvKeyConfig.setText(map.get("packageName").toString() + ".key");
+		tvKeyConfig.setText(map.get("packageName").toString() + ".xml");
+		TextView tvTouchConfig = (TextView) view.findViewById(R.id.touch_file_name_tv);
+		tvTouchConfig.setText(map.get("packageName").toString() + ".tp");
 		view.setTag(map);
 		lyContent.addView(view);
 	}
@@ -134,6 +140,10 @@ public class ViewGameConfiguration implements OnClickListener {
 				bundle.putString("packageName", packageNameXML);
 				intent.putExtras(bundle);
 				lyContent.getContext().startActivity(intent);
+			} else if (btnOpenGame.equals(v)) {
+				Intent mIntent = new Intent(v.getContext().getPackageManager().getLaunchIntentForPackage(packageNameXML));
+				lyContent.getContext().startActivity(mIntent);
+				loadKeyMapConfigurationToCache();
 			}
 			menuDialog.cancel();
 		}

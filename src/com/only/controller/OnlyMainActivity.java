@@ -236,7 +236,7 @@ public class OnlyMainActivity extends Activity {
 				map.put("icon", icon);
 				map.put("label", label);
 				map.put("packageName", packageName);
-				listData.add(map);
+				listData.add(map);  
 				Log.e(TAG, "loadallapps packagename = " + packageName);
 			}
 		}

@@ -23,7 +23,8 @@
         android:layout_height="35dp"
         android:text="@string/btn_touch_config"
         android:textColor="@color/white_color"
-        android:background="@drawable/click_state"/>
+        android:background="@drawable/click_state"
+        android:visibility="gone"/>
     <ImageView android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/content_line"/>
@@ -42,6 +43,15 @@
         android:text="@string/btn_enable_touch_file_config"
         android:textColor="@color/white_color"
         android:background="@drawable/click_state"/>
+    <ImageView android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/content_line"/>
+    <Button android:id="@+id/btn_open_game"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="@string/btn_open_game"
+        android:textColor="@color/white_color"
+        android:background="@drawable/click_state" />
     <ImageView android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@drawable/content_line"/>

@@ -40,5 +40,9 @@
     <string name="right_joystick">右摇杆区域</string>
     <string name="has_left_joystick">左摇杆区域已绘制，不可重绘</string>
     <string name="has_right_joystick">右摇杆区域已绘制，不可重绘</string>
+    <string name="btn_open_game">运行游戏</string>
+    <string name="tv_key_file_state_disable">关闭</string>
+   	<string name="tv_key_file_state_enable">打开</string>
+   	<string name="save_to">已保存为</string>
 
 </resources>

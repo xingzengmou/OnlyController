@@ -45,22 +45,23 @@ public final class R {
         public static final int switch_on_normal=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f09001e;
+        public static final int action_settings=0x7f09001f;
         public static final int app_name_tv=0x7f09000e;
         public static final int btn_add_game=0x7f090004;
-        public static final int btn_delete_game=0x7f090019;
+        public static final int btn_delete_game=0x7f09001a;
         public static final int btn_edit_key_config=0x7f090015;
         public static final int btn_enable_key_file_config=0x7f090017;
         public static final int btn_enable_touch_file_config=0x7f090018;
-        public static final int btn_ime_enable=0x7f09001b;
+        public static final int btn_ime_enable=0x7f09001c;
+        public static final int btn_open_game=0x7f090019;
         public static final int btn_save=0x7f090002;
         public static final int btn_touch_config=0x7f090016;
         public static final int game_config_files_ly=0x7f090005;
         public static final int game_list_btn=0x7f090007;
         public static final int icon_iv=0x7f09000d;
-        public static final int ime_config_btn=0x7f09001a;
+        public static final int ime_config_btn=0x7f09001b;
         public static final int iv_app_icon=0x7f09000b;
-        public static final int iv_iem_enable=0x7f09001c;
+        public static final int iv_iem_enable=0x7f09001d;
         public static final int key_config_btn=0x7f090008;
         public static final int key_config_ly=0x7f090003;
         public static final int key_file_name_tv=0x7f090010;
@@ -69,7 +70,7 @@ public final class R {
         public static final int map_key_name_tv=0x7f090014;
         public static final int settings_ly=0x7f090006;
         public static final int settings_tv=0x7f090009;
-        public static final int sv_touch=0x7f09001d;
+        public static final int sv_touch=0x7f09001e;
         public static final int title_ly=0x7f090000;
         public static final int touch_file_name_tv=0x7f090012;
         public static final int tv_app_name=0x7f09000c;
@@ -102,6 +103,7 @@ public final class R {
         public static final int btn_enable_key_file_config=0x7f060016;
         public static final int btn_enable_touch_file_config=0x7f060018;
         public static final int btn_key_config=0x7f060013;
+        public static final int btn_open_game=0x7f06002d;
         public static final int btn_save=0x7f060021;
         public static final int btn_touch_config=0x7f060014;
         public static final int cancel=0x7f060026;
@@ -130,6 +132,7 @@ public final class R {
         public static final int right_joystick=0x7f06002a;
         public static final int root_failed=0x7f06000e;
         public static final int root_successful=0x7f06000d;
+        public static final int save_to=0x7f06002e;
         public static final int settings_tv=0x7f060005;
         public static final int system_initing=0x7f060027;
         public static final int touch_file_name_tv=0x7f060007;

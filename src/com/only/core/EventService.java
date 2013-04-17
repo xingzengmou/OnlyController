@@ -1,7 +1,9 @@
 package com.only.core;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class EventService extends Service {
 	private Context context;
 	private static Activity thiz;
 	private String runningPackageName;
-	private boolean runningPackageHasAddToConfiguration = true;
+	private boolean packageIsRunning = false;
 	
 	/**
 	 * touch configuration params
@@ -211,7 +213,10 @@ public class EventService extends Service {
 		}
 	}
 	
-	
+	/**
+	 * auto load configuration file
+	 * @param context
+	 */
 	public void appsMonitor(final Context context) {
 		new Thread(new Runnable() {
 
@@ -221,15 +226,24 @@ public class EventService extends Service {
 				while (true) {
 					ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 					List<RunningAppProcessInfo> lrapi = am.getRunningAppProcesses();
-					runningPackageName = lrapi.get(0).processName;
-					Log.e(TAG, "packageNmae = " + runningPackageName + " GlobalData.currentConfigurationXML = " + GlobalData.currentConfigurationXML);
-					if (!runningPackageName.contains(GlobalData.currentConfigurationXML)) {
-//						Log.e(TAG, " GlobalData.listCache.lenght = " + GlobalData.listCache.size());
-						if (runningPackageHasAddConfiguration()) {
-							GlobalData.currentConfigurationXML = runningPackageName;
-							loadKeyMapConfigurationToCache(context);
+					if (waitCurrentPackageQuti(lrapi)) {
+						for (int i = 0; i < lrapi.size(); i ++) {
+							RunningAppProcessInfo rpi = lrapi.get(i);
+//							Log.e(TAG, " package = " + rpi.processName);
+							for (int j = 0; j < GlobalData.listCache.size(); j ++) {
+								Map<String, Object> map = GlobalData.listCache.get(j);
+								String dbPackageName = map.get("packageName").toString();
+								if (rpi.processName.contains(dbPackageName) && 
+										rpi.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+									GlobalData.currentConfigurationXML = dbPackageName;
+									loadKeyMapConfigurationToCache(context);
+									packageIsRunning = true;
+//									Log.e(TAG, "appsMonitor packageIsRunning = " + packageIsRunning + " found package  = " + dbPackageName);
+									break;
+								}
+							}
 						}
-					}
+					} 
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
@@ -242,17 +256,21 @@ public class EventService extends Service {
 		}).start();
 	}
 	
-	private boolean runningPackageHasAddConfiguration() {
-		for (Map<String, Object> map: GlobalData.listCache) {
-			String dbPackageName = map.get("packageName").toString();
-			Log.e(TAG, "dbPackageName = " + dbPackageName);
-			if (runningPackageName.contains(dbPackageName)) {
-				runningPackageHasAddToConfiguration = true;
-				return runningPackageHasAddToConfiguration;
+	private boolean waitCurrentPackageQuti(List<RunningAppProcessInfo> lrpi) {
+		for (int i = 0; i < lrpi.size(); i ++) {
+			RunningAppProcessInfo rpi = lrpi.get(i);
+//			Log.e(TAG, "waitCurrentPackageQuti package = " + rpi.processName);
+			if (rpi.processName.contains(GlobalData.currentConfigurationXML)
+					&& rpi.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+				return false;
+			} else if (rpi.processName.contains(GlobalData.currentConfigurationXML)) {
+				Log.e(TAG, "GlobalData.currentConfigurationXM packagename = " + GlobalData.currentConfigurationXML + " quit");
+				break;
 			}
-		}
-		runningPackageHasAddToConfiguration = false;
-		return runningPackageHasAddToConfiguration;
+		}  
+		Log.e(TAG, "GlobalData.currentConfigurationXM packagename = " + GlobalData.currentConfigurationXML + " quit");
+		packageIsRunning = false;
+		return true;
 	}
 	
 	private void loadKeyMapConfigurationToCache(Context context) {
@@ -265,7 +283,8 @@ public class EventService extends Service {
 	}
 
 	private void startTouchConfigurationView() {
-		if (!runningPackageHasAddToConfiguration) return;
+//		Log.e(TAG, "startTouchConfigurationView packageIsRunning = " + packageIsRunning); 
+		if (!packageIsRunning) return;
 		keyList = null;
 		keyList = new ArrayList<Profile>();
 		Dialog tpDialogView = new Dialog(context,  R.style.selectorDialog);
@@ -783,8 +802,53 @@ public class EventService extends Service {
 				}
 			}
 			fos.close();
+			Toast.makeText(context, context.getString(R.string.save_to) + GlobalData.currentConfigurationXML + ".tp", Toast.LENGTH_LONG).show();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadFile(String arg1) {
+		FileReader fr;
+		if (keyList == null) keyList = new ArrayList<Profile>();
+		if (keyList.size() > 0)  keyList.clear();
+		try {
+			fr = new FileReader(this.getFilesDir() + "/" + arg1.toString());
+			BufferedReader br = new BufferedReader(fr);
+			String val = br.readLine();
+			while (null != val) {
+				Log.e(TAG, "read val = " + val);
+				if (val.equals('\n')) val = br.readLine();
+				Profile bp = new Profile();
+				if (val != null && !val.equals("")) {
+					bp.key = Integer.valueOf(val);	
+				}
+				val = br.readLine();
+				if ( val != null && !val.equals("")) {
+					bp.posX = Float.valueOf(val);
+				}
+				val = br.readLine();
+				if (val != null && !val.equals("")) {
+					bp.posY = Float.valueOf(val);
+				}
+				val = br.readLine();
+				if (val != null && !val.equals("")) {
+					bp.posR = Float.valueOf(val);
+				}
+				val = br.readLine();
+				if (val != null && !val.equals("")) {
+					bp.posType = Float.valueOf(val);
+				}
+				keyList.add(bp);
+				Log.e(TAG, "load file add Profile key= " + bp.key + " posx= " + bp.posX + " posy= " + bp.posY);
+				val = br.readLine();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

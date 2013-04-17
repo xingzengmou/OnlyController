@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class AppsDatabase extends SQLiteOpenHelper {
 	private static final String TAG = "AppsDatabase";
 	
-	private static final String CREATE_TABLE = "create table app_list(package_name varchar(20))";
+	private static final String CREATE_TABLE = "create table app_list(package_name varchar(256))";
 	
 	public AppsDatabase(Context context, String name, CursorFactory factory,
 			int version) {
