@@ -19,6 +19,8 @@ import com.only.root.Root;
 import com.only.touch.Position;
 import com.only.touch.Profile;
 import com.only.touch.ScreenView;
+import com.only.utils.KeyUtils;
+import com.only.utils.TouchUtils;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -87,6 +89,7 @@ public class EventService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.e(TAG, "EventService oncreate");
+		TouchUtils.setContext(this);
 		context = this.getApplicationContext();
 		mHandler = new EventHandler();
 		getRoot.start();
@@ -143,37 +146,19 @@ public class EventService extends Service {
 			switch (msg.what) {
 			case MSG_KEY_DOWN:
 				event = (InputAdapterKeyEvent) msg.obj;
-				for (int i = 0; i < GlobalData.keyAppValue.length; i ++) {
-					int mapCode = GlobalData.intKeyMapCache.get(GlobalData.keyAppName[i] + "_INT");
-					Log.e(TAG, "keyCode = " + event.keyCode + " mapCode = " + mapCode);
-					if (event.keyCode == 25 && !tpconfiging) {
-						startTouchConfigurationView();
-						tpconfiging = true;
-						break;
-					}
-					if (mapCode == event.keyCode) {
-						int eventCode = GlobalData.keyAppValue[i];
-						Log.e(TAG, "found key = " + GlobalData.keyAppName[i] + " keycode = " + GlobalData.keyAppValue[i]);
-						if (eventCode != 0) { // this key has mapped
-							netSocket.send("injectKey:" + eventCode + ":0:" + KeyEvent.ACTION_DOWN);
-						}
-						break;
-					} 
+				if (event.keyCode == 25 && !tpconfiging) {
+					startTouchConfigurationView();
+					tpconfiging = true;
+					break;
+				}
+				if (!tpconfiging && !TouchUtils.sendTouchMapDown(event)) {
+					KeyUtils.sendMapKeyDown(event);
 				}
 				break;
 			case MSG_KEY_UP:
 				event = (InputAdapterKeyEvent) msg.obj;
-				for (int i = 0; i < GlobalData.keyAppValue.length; i ++) {
-					int mapCode = GlobalData.intKeyMapCache.get(GlobalData.keyAppName[i] + "_INT");
-					Log.e(TAG, "keyCode = " + event.keyCode + " mapCode = " + mapCode);
-					if (mapCode == event.keyCode) {
-						int eventCode = GlobalData.keyAppValue[i];
-						Log.e(TAG, "found key = " + GlobalData.keyAppName[i] + " keycode = " + GlobalData.keyAppValue[i]);
-						if (eventCode != 0) { // this key has mapped
-							netSocket.send("injectKey:" + eventCode + ":0:" + KeyEvent.ACTION_DOWN);
-						}
-						break;
-					} 
+				if (!tpconfiging && !TouchUtils.sendTouchMapUp(event)) {
+					KeyUtils.sendMapKeyUp(event);
 				}
 				break;
 			case MSG_JOYSTICK:
@@ -280,6 +265,10 @@ public class EventService extends Service {
 			GlobalData.keyMapCache.put(GlobalData.keyAppName[i], sp.getString(GlobalData.keyAppName[i], context.getString(R.string.unknown)));
 			GlobalData.intKeyMapCache.put(GlobalData.keyAppName[i] + "_INT", sp.getInt(GlobalData.keyAppName[i] + "_INT", 0));
 		}
+		
+		if (keyList != null) keyList.clear();
+		keyList = null;
+		keyList = TouchUtils.loadFile(GlobalData.currentConfigurationXML + ".tp");
 	}
 
 	private void startTouchConfigurationView() {
@@ -413,7 +402,11 @@ public class EventService extends Service {
 				return false;
 			}
 			
-			saveFile(GlobalData.currentConfigurationXML + ".tp");
+			if (!noTouchData && event.getKeyCode() != 25 && oldKey != event.getKeyCode()
+					&& event.getAction() == KeyEvent.ACTION_DOWN) {
+				saveFile(GlobalData.currentConfigurationXML + ".tp");
+				noTouchData = true;
+			}
 		
 			oldKey = 0;
 			return false;
@@ -802,7 +795,8 @@ public class EventService extends Service {
 				}
 			}
 			fos.close();
-			Toast.makeText(context, context.getString(R.string.save_to) + GlobalData.currentConfigurationXML + ".tp", Toast.LENGTH_LONG).show();
+			TouchUtils.setTouchList(keyList);
+			Toast.makeText(context, context.getString(R.string.save_to) + GlobalData.currentConfigurationXML + ".tp", Toast.LENGTH_SHORT).show();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block 
 		} catch (IOException e) {
@@ -811,47 +805,4 @@ public class EventService extends Service {
 		}
 	}
 	
-	private void loadFile(String arg1) {
-		FileReader fr;
-		if (keyList == null) keyList = new ArrayList<Profile>();
-		if (keyList.size() > 0)  keyList.clear();
-		try {
-			fr = new FileReader(this.getFilesDir() + "/" + arg1.toString());
-			BufferedReader br = new BufferedReader(fr);
-			String val = br.readLine();
-			while (null != val) {
-				Log.e(TAG, "read val = " + val);
-				if (val.equals('\n')) val = br.readLine();
-				Profile bp = new Profile();
-				if (val != null && !val.equals("")) {
-					bp.key = Integer.valueOf(val);	
-				}
-				val = br.readLine();
-				if ( val != null && !val.equals("")) {
-					bp.posX = Float.valueOf(val);
-				}
-				val = br.readLine();
-				if (val != null && !val.equals("")) {
-					bp.posY = Float.valueOf(val);
-				}
-				val = br.readLine();
-				if (val != null && !val.equals("")) {
-					bp.posR = Float.valueOf(val);
-				}
-				val = br.readLine();
-				if (val != null && !val.equals("")) {
-					bp.posType = Float.valueOf(val);
-				}
-				keyList.add(bp);
-				Log.e(TAG, "load file add Profile key= " + bp.key + " posx= " + bp.posX + " posy= " + bp.posY);
-				val = br.readLine();
-			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }

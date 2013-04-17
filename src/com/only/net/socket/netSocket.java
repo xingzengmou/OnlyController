@@ -32,12 +32,13 @@ public class netSocket {
 		return true;
 	}
 	
-	public static void send(final String content) {
+	public static synchronized void send(final String content) {
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				
 				pw.println(content);
 				pw.flush();
 				try {
