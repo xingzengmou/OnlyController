@@ -18,13 +18,14 @@ public class Root {
 	private static FileOutputStream fos;
 	private static FileInputStream fis;
 	private static DataOutputStream dos = null;
+	private static DataInputStream dis = null;
 	private static Process process = null;
 	
 	public static boolean root() {
 		try {
 			process = Runtime.getRuntime().exec("su");
 			dos = new DataOutputStream(process.getOutputStream());
-			DataInputStream dis = new DataInputStream(process.getInputStream());
+			dis = new DataInputStream(process.getInputStream());
 			dos.write("id \n".getBytes());
 			dos.flush();
 			String retLine = dis.readLine();
@@ -36,6 +37,7 @@ public class Root {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		printLog.start();
 		return true;
 	}
 	
@@ -59,27 +61,79 @@ public class Root {
 		}
 	}
 	
-	public static void execCmmd(String cmd) {
+	public static synchronized void execCmmd(String cmd) {
 		String s = cmd + " \r";
 		Log.e(TAG, "execCmmd = " + s + " fos = " + fos);
 		try {
 			byte[] cmdByte = s.getBytes();
 			fos.write(cmdByte);
 			fos.flush();
+//			root();
+//			s = cmd + " \n";
+//			cmdByte = s.getBytes();
+//			dos.write(cmdByte);
+//			dos.flush();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	  
+	public static synchronized void chmod(String cmd) {
+		try {
+//			root();
+			cmd += " \n";
+			dos.write(cmd.getBytes());
+			dos.flush();
+//			dos.write("exit \n".getBytes());
+//			dos.flush();
+//			String s = cmd + " \r";
+//			fos.write(s.getBytes());
+//			fos.flush();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public static void chmod(String cmd) {
-		try {
-			cmd += " \n";
-			dos.write(cmd.getBytes());
-			dos.flush();	
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	private static Thread printLog = new Thread(new Runnable() {
+		public void run() {
+			DataInputStream mdis = new DataInputStream(process.getErrorStream());
+			String eline = null;
+			String line = null;
+			while (true) {
+				try {
+					eline = mdis.readLine();
+					line = dis.readLine();
+					while (eline != null || line != null) {
+						Log.e(TAG, "eline = " + eline);
+						Log.e(TAG, "line = " + line);
+						eline = mdis.readLine();
+						line = dis.readLine();
+					}
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-	}
+	});
 }

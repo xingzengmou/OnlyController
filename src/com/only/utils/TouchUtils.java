@@ -76,7 +76,7 @@ public class TouchUtils {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 		return touchList;
 	}
 	
@@ -145,7 +145,7 @@ public class TouchUtils {
 			// TODO Auto-generated method stub
 			while (true) {
 				if (mapListDown.size() > 0) {
-					String cmd = "injectTouch:" + mapListDown.size() + ":" + MotionEvent.ACTION_DOWN + ":";
+					String cmd = "injectTouch:" + mapListDown.size() + ":" + MotionEvent.ACTION_MOVE + ":";
 					for (Profile profile : mapListDown) {
 						cmd += profile.posX + ":" + profile.posY + ":";
 					}
@@ -153,7 +153,7 @@ public class TouchUtils {
 					Log.e(TAG, "cmd = " + cmd + " touch down");
 					netSocket.send(cmd);
 				}
-				
+				 
 				if (mapListUp.size() > 0) {
 					String cmd = "injectTouch:" + mapListUp.size() + ":" + MotionEvent.ACTION_UP + ":";
 					for (Profile profile : mapListUp) {

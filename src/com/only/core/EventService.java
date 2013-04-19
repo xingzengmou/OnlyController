@@ -38,6 +38,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -54,12 +55,12 @@ public class EventService extends Service {
 	private static final String TAG = "EventService";
 	private static final String ACTION = "com.only.core.EventService";
 	
-	private EventHandler mHandler;
+	private static EventHandler mHandler;
 	private InputAdapterKeyEvent event;
 	private Context context;
 	private static Activity thiz;
 	private String runningPackageName;
-	private boolean packageIsRunning = false;
+	private static boolean packageIsRunning = false; //当前运行的应用是不是已在IME中配置，如果是则为TRUE， 否为FALSE
 	
 	/**
 	 * touch configuration params
@@ -89,22 +90,21 @@ public class EventService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.e(TAG, "EventService oncreate");
-		TouchUtils.setContext(this);
 		context = this.getApplicationContext();
 		mHandler = new EventHandler();
-		getRoot.start();
-		appsMonitor(context);
-		InputAdapter.setHandler(mHandler);
+		new Thread(new Runnable() {
+			public void run() {
+				envInit();
+			}
+		}).start();
 	}
 	
 	public static void setActivity(Activity activity) {
 		thiz = activity;
 	}
 	
-	private Thread getRoot = new Thread(new Runnable() {
 
-		@Override
-		public void run() {
+	private void envInit() {
 			// TODO Auto-generated method stub
 			if (Root.root()) {
 				mHandler.sendEmptyMessage(EventHandler.MSG_ROOTED);
@@ -113,26 +113,27 @@ public class EventService extends Service {
 					InputAdapter.openEvent();
 					InputAdapter.start();
 				}
-				try {
-					Thread.sleep(5000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+//				try {
+//					Thread.sleep(SystemClock.uptimeMillis() + 5000);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 				Log.e(TAG, "inputjar running will to connect netsocket");
 				if (!netSocket.connectService()) {
 					mHandler.sendEmptyMessage(EventHandler.MSG_CONNECT_INPUT_JAR_FAILED);
 				} else {
-					netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
+////					netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
 				}
 				mHandler.sendEmptyMessage(EventHandler.MSG_INPUTJAR_CONNECTED);
 			} else {
 				mHandler.sendEmptyMessage(EventHandler.MSG_ROOT_FAILED);
 			}
 			Log.e(TAG, "netsocket connect finish, controllercore start");
-		}
+			TouchUtils.setContext(context);
+			appsMonitor(context);
+			InputAdapter.setHandler(mHandler);
+	}
 		
-	});
-	
 	public class EventHandler extends Handler {
 		public static final int MSG_KEY_DOWN = 0X01;
 		public static final int MSG_KEY_UP = 0X02;
@@ -143,9 +144,12 @@ public class EventService extends Service {
 		public static final int MSG_ROOTED = 0x07;
 		
 		public void handleMessage(Message msg) {
+			AlertDialog d = null;
 			switch (msg.what) {
 			case MSG_KEY_DOWN:
 				event = (InputAdapterKeyEvent) msg.obj;
+				Log.e(TAG, "event.keyCode = " + event.keyCode + " tpconfiging = " + tpconfiging + " packageIsRunning = " + packageIsRunning);
+				if (!packageIsRunning) break;
 				if (event.keyCode == 25 && !tpconfiging) {
 					startTouchConfigurationView();
 					tpconfiging = true;
@@ -156,6 +160,7 @@ public class EventService extends Service {
 				}
 				break;
 			case MSG_KEY_UP:
+				if (!packageIsRunning) break;
 				event = (InputAdapterKeyEvent) msg.obj;
 				if (!tpconfiging && !TouchUtils.sendTouchMapUp(event)) {
 					KeyUtils.sendMapKeyUp(event);
@@ -174,7 +179,9 @@ public class EventService extends Service {
 						thiz.finish();
 					}
 				});
-				b.show();
+				d = b.create();
+				d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+				d.show();
 				break;
 			case MSG_INPUTJAR_CONNECTED:
 				break;
@@ -189,10 +196,12 @@ public class EventService extends Service {
 						thiz.finish();
 					}
 				});
-				b1.show();
+				d = b1.create();
+				d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+				d.show();
 				break;
 			case MSG_ROOTED:
-				Toast.makeText(thiz, R.string.root_successful, Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, R.string.root_successful, Toast.LENGTH_SHORT).show();
 				break;
 			}
 		}
@@ -246,14 +255,15 @@ public class EventService extends Service {
 			RunningAppProcessInfo rpi = lrpi.get(i);
 //			Log.e(TAG, "waitCurrentPackageQuti package = " + rpi.processName);
 			if (rpi.processName.contains(GlobalData.currentConfigurationXML)
-					&& rpi.importance == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+					&& (rpi.importance & RunningAppProcessInfo.IMPORTANCE_FOREGROUND) == RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+				packageIsRunning = true;
 				return false;
 			} else if (rpi.processName.contains(GlobalData.currentConfigurationXML)) {
 				Log.e(TAG, "GlobalData.currentConfigurationXM packagename = " + GlobalData.currentConfigurationXML + " quit");
 				break;
 			}
 		}  
-		Log.e(TAG, "GlobalData.currentConfigurationXM packagename = " + GlobalData.currentConfigurationXML + " quit");
+//		Log.e(TAG, "GlobalData.currentConfigurationXM packagename = " + GlobalData.currentConfigurationXML + " quit");
 		packageIsRunning = false;
 		return true;
 	}
@@ -269,7 +279,7 @@ public class EventService extends Service {
 		if (keyList != null) keyList.clear();
 		keyList = null;
 		keyList = TouchUtils.loadFile(GlobalData.currentConfigurationXML + ".tp");
-	}
+	} 
 
 	private void startTouchConfigurationView() {
 //		Log.e(TAG, "startTouchConfigurationView packageIsRunning = " + packageIsRunning); 
@@ -300,20 +310,6 @@ public class EventService extends Service {
 		lp.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL;// | LayoutParams.FLAG_NOT_FOCUSABLE;
 		lp.alpha = 0.9f;
 		tpDialogView.getWindow().setAttributes(lp); 
-		
-//		WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-//		Display display = wm.getDefaultDisplay();
-//		WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-//		lp.type = WindowManager.LayoutParams.TYPE_PHONE;
-//		lp.format = PixelFormat.RGBA_8888;
-//		lp.height = display.getHeight();
-//		lp.width = display.getWidth();
-//		lp.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE;
-//		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//		View view = (View) inflater.inflate(R.layout.view_touch_configuration, null);
-//		screenView = (ScreenView) view.findViewById(R.id.sv_touch);
-//		screenView.setOnTouchListener(onTouchConfigurationViewListener);
-//		wm.addView(view, lp);
 		
 	} 
 	
@@ -404,6 +400,7 @@ public class EventService extends Service {
 			
 			if (!noTouchData && event.getKeyCode() != 25 && oldKey != event.getKeyCode()
 					&& event.getAction() == KeyEvent.ACTION_DOWN) {
+				tpconfiging = false;
 				saveFile(GlobalData.currentConfigurationXML + ".tp");
 				noTouchData = true;
 			}

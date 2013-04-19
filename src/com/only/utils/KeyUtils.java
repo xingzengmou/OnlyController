@@ -22,7 +22,7 @@ public class KeyUtils {
 				}
 				break;
 			} 
-		}
+		}  
 		
 		return true;
 	}
@@ -35,7 +35,7 @@ public class KeyUtils {
 				int eventCode = GlobalData.keyAppValue[i];
 				Log.e(TAG, "found key = " + GlobalData.keyAppName[i] + " keycode = " + GlobalData.keyAppValue[i]);
 				if (eventCode != 0) { // this key has mapped
-					netSocket.send("injectKey:" + eventCode + ":0:" + KeyEvent.ACTION_DOWN);
+					netSocket.send("injectKey:" + eventCode + ":0:" + KeyEvent.ACTION_UP);
 				}
 				break;
 			} 

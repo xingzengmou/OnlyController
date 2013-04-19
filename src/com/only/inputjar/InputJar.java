@@ -1,10 +1,12 @@
 package com.only.inputjar;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.DatagramSocket;
 import java.util.List;
 
 import android.app.Activity;
@@ -107,6 +109,24 @@ public class InputJar {
 			} 
 			is.close();
 			is = null;
+			 
+//			is = thiz.getAssets().open("InputKey.jar");
+//			size = is.available();
+//			if (size > 0) {
+//				File file = new File(Environment.getExternalStorageDirectory() + "/inputjar/InputKey.jar");
+//				byte[] buffer = new byte[size];
+//				is.read(buffer);
+//				FileOutputStream os = new FileOutputStream(file);
+//				os.write(buffer);
+//				os.flush();
+//				os.close();
+//				os = null;
+//				file = null;
+//			} else {
+//				return false;
+//			} 
+//			is.close();
+//			is = null;
 			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -118,12 +138,43 @@ public class InputJar {
 	private static boolean copyInputJarFileFromSDCARDToData() {
 		String moveCmd = "busybox cp -rf " + Environment.getExternalStorageDirectory() + "/inputjar " + " /data/";
 		Root.execCmmd(moveCmd);
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
-	
+	  
 	private static void runInputJar() {
-		String cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.blueocean.jnsinput.JNSInput";
+		String cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput";
 		Root.execCmmd(cmd);
+//		cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/InputKey.jar; exec app_process /system/bin com.only.input.InputKey &";
+//		Root.execCmmd(cmd);
+//		runInputJarCmd(cmd);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}  
+	}
+	
+	private static void runInputJarCmd(String cmd) {
+		try {
+			Process process = Runtime.getRuntime().exec(cmd);
+			DataOutputStream dos = new DataOutputStream(process.getOutputStream());
+			DataInputStream dis = new DataInputStream(process.getInputStream());
+			String line = dis.readLine();
+			while (line != null) {
+				Log.e(TAG, "runInputJarCmd = " + line);
+				line = dis.readLine();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 	}
 	
 	private static void checkInputJarRunning(Activity thiz) {

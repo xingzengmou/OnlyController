@@ -32,6 +32,7 @@ public class InputAdapter {
 				keyEvent.scanCode = scanCode;
 				keyEvent.keyCode = kc.getKeyCode(scanCode);
 				if (mHandler != null) mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_DOWN, keyEvent));
+				Log.e(TAG, "mHandler = " + mHandler);
 				break;
 			}
 		}
