@@ -37,7 +37,6 @@ public class Root {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		printLog.start();
 		return true;
 	}
 	
@@ -68,11 +67,6 @@ public class Root {
 			byte[] cmdByte = s.getBytes();
 			fos.write(cmdByte);
 			fos.flush();
-//			root();
-//			s = cmd + " \n";
-//			cmdByte = s.getBytes();
-//			dos.write(cmdByte);
-//			dos.flush();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -87,15 +81,9 @@ public class Root {
 	  
 	public static synchronized void chmod(String cmd) {
 		try {
-//			root();
 			cmd += " \n";
 			dos.write(cmd.getBytes());
 			dos.flush();
-//			dos.write("exit \n".getBytes());
-//			dos.flush();
-//			String s = cmd + " \r";
-//			fos.write(s.getBytes());
-//			fos.flush();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -107,33 +95,4 @@ public class Root {
 			e.printStackTrace();
 		}
 	}
-	
-	private static Thread printLog = new Thread(new Runnable() {
-		public void run() {
-			DataInputStream mdis = new DataInputStream(process.getErrorStream());
-			String eline = null;
-			String line = null;
-			while (true) {
-				try {
-					eline = mdis.readLine();
-					line = dis.readLine();
-					while (eline != null || line != null) {
-						Log.e(TAG, "eline = " + eline);
-						Log.e(TAG, "line = " + line);
-						eline = mdis.readLine();
-						line = dis.readLine();
-					}
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	});
 }

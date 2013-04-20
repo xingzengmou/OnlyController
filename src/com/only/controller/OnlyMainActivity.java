@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.only.config.GameConfigurationState;
 import com.only.controller.data.AppsDatabase;
 import com.only.controller.data.GlobalData;
 import com.only.core.EventService;
@@ -87,11 +88,13 @@ public class OnlyMainActivity extends Activity {
 	private ListView appListView;
 	
 	private AppsDatabase mAppDatabase = null;
+	private GameConfigurationState mGameConfigurationState;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+		mGameConfigurationState = new GameConfigurationState(this);
 		thiz = this;
 		setContentView(R.layout.activity_only_main);
 		getViewHandles();
@@ -236,6 +239,8 @@ public class OnlyMainActivity extends Activity {
 				map.put("icon", icon);
 				map.put("label", label);
 				map.put("packageName", packageName);
+				map.put("keyFileState", "true");
+				map.put("touchFileState", "true");
 				listData.add(map);  
 				Log.e(TAG, "loadallapps packagename = " + packageName);
 			}
@@ -258,6 +263,8 @@ public class OnlyMainActivity extends Activity {
 					return;
 				}
 			}
+			mGameConfigurationState.setKeyConfigurationState(map.get("packageName").toString(), map.get("keyFileState").toString());
+			mGameConfigurationState.setKeyConfigurationState(map.get("packageName").toString(), map.get("touchFileState").toString());
 			mViewGameConfiguration.addGameView(map);
 			GlobalData.listCache.add(map);
 			insertDatabase(map);

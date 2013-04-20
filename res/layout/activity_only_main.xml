@@ -21,6 +21,7 @@
 	    <Button android:id="@+id/btn_add_game"
 	        android:layout_height="match_parent"
 	        android:layout_width="wrap_content"
+	        android:layout_marginRight="5dp"
 	        android:background="@drawable/btn_add_game_state"
 	        android:text="@string/btn_add_game"
 	        android:textColor="@color/white_color"/>

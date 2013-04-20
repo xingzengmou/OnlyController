@@ -37,7 +37,7 @@
 	            <TextView android:id="@+id/tv_key_file_state"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
-	                android:text="@string/tv_key_file_state_disable"
+	                android:text="@string/tv_key_file_state_enable"
 	                android:textColor="@color/color_red"/>
 	            <TextView android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
