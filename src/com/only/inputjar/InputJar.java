@@ -15,6 +15,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -108,6 +109,24 @@ public class InputJar {
 			} 
 			is.close();
 			is = null;
+			
+			is = thiz.getAssets().open("OnlyInput_above_4.0.jar");
+			size = is.available();
+			if (size > 0) {
+				File file = new File(Environment.getExternalStorageDirectory() + "/inputjar/OnlyInput_above_4.0.jar");
+				byte[] buffer = new byte[size];
+				is.read(buffer);
+				FileOutputStream os = new FileOutputStream(file);
+				os.write(buffer);
+				os.flush();
+				os.close();
+				os = null;
+				file = null;
+			} else {
+				return false;
+			} 
+			is.close();
+			is = null;
 			 
 			return true;
 		} catch (IOException e) {
@@ -130,7 +149,22 @@ public class InputJar {
 	}
 	  
 	private static void runInputJar() {
-		String cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput";
+		String[] versions = Build.VERSION.RELEASE.split(".");
+		for (String v : versions) {
+			Log.e(TAG, "version slipt v = " + v);
+		}
+		String version = versions[0].trim() + "." + versions[1].trim();
+		Log.e(TAG, "version = " + version);
+		float fVersion = Float.parseFloat(version);
+		Log.e(TAG, "fVersion = " + fVersion);
+		String cmd = "";
+		if (fVersion <= 4.0) {
+			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput.jar");
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput";
+		} else {
+			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput_above_4.0.jar");
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput_above_4.0.jar; exec app_process /system/bin com.only.input.OnlyInput";
+		}
 		Root.execCmmd(cmd);
 	}
 	
