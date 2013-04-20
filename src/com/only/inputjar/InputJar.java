@@ -149,7 +149,11 @@ public class InputJar {
 	}
 	  
 	private static void runInputJar() {
-		String[] versions = Build.VERSION.RELEASE.split(".");
+		Log.e(TAG, "release = " + Build.VERSION.RELEASE);
+		String[] versions = new String[2];
+		versions[0] = Build.VERSION.RELEASE.substring(0,  Build.VERSION.RELEASE.indexOf("."));
+		String temp = Build.VERSION.RELEASE.substring(Build.VERSION.RELEASE.indexOf(".") + 1);
+		versions[1] = temp.substring(0, temp.indexOf("."));
 		for (String v : versions) {
 			Log.e(TAG, "version slipt v = " + v);
 		}
@@ -160,10 +164,10 @@ public class InputJar {
 		String cmd = "";
 		if (fVersion <= 4.0) {
 			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput.jar");
-			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput";
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput &";
 		} else {
 			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput_above_4.0.jar");
-			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput_above_4.0.jar; exec app_process /system/bin com.only.input.OnlyInput";
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput_above_4.0.jar; exec app_process /system/bin com.only.input.OnlyInput &";
 		}
 		Root.execCmmd(cmd);
 	}
