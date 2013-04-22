@@ -174,11 +174,17 @@ private:
 #ifdef BUILD_NDK
 	int mDevicesCount;
 	int mDevicesIndex;
+	char willAddDevicePath[10][256];
+	int willAddDevicePathCount;
+	int mWillRemoveDevicesCount;
+	int hasDeviceAdded;
+	int hasDeviceDel;
 	struct Device *mDevices;
 	struct Device *mDevicesPos;
-	struct Device *mWillRemoveDevices;
+	struct Device *mWillRemoveDevices[10];
 
 	ABSInputAdapter* mABSInputAdapter;
+
 #else
 	KeyedVector<int32_t, Device *> mDevices;
 #endif

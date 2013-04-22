@@ -123,7 +123,10 @@ int EventHub::init() {
 	mABSInputAdapter = NULL;
 #ifdef BUILD_NDK
 	mDevices = NULL;
-	mWillRemoveDevices = NULL;
+	willAddDevicePathCount = 0;
+	hasDeviceAdded = 0;
+	hasDeviceDel = 0;
+	mWillRemoveDevicesCount = 0;
 #endif
 	iNotifyFd = inotify_init();
 	int ret = inotify_add_watch(iNotifyFd, DEVICE_PATH, IN_CREATE | IN_DELETE);
@@ -384,6 +387,26 @@ int EventHub::getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize, 
 	struct timeval timeout;
 	int32_t ms = 500;
 
+	if (hasDeviceAdded) {
+		int opened = 0;
+		mDevicesPos = mDevices; //mDevicesPos是指向最后一个设备的,新加设备加在尾部
+		while (mDevicesPos) {
+			if (mDevicesPos->next == NULL) break;
+			mDevicesPos = mDevicesPos->next;
+		}
+		for (int i = 0; i < willAddDevicePathCount; i ++) {
+			if (openDeviceLocked(willAddDevicePath[i])) {
+				opened = 0;
+			} else {
+				opened = 1;
+			}
+		}
+		if (opened) {
+			hasDeviceAdded = 0;
+			willAddDevicePathCount  = 0;
+		}
+	}
+
 #ifdef BUILD_NDK
 	struct Device *p = mDevices;
 	if (p == NULL) {
@@ -391,25 +414,31 @@ int EventHub::getEvents(int timeoutMillis, RawEvent *buffer, size_t bufferSize, 
 	}
 
 	//check will  be removed device, and remove it
-	struct Device *pt = NULL;
-	if (mWillRemoveDevices != NULL) {
-		LOGE("mWillRemoveDevice = 0X%0X", mWillRemoveDevices);
-		do {
-			if (p == mWillRemoveDevices) {
-				if (p == mDevices) {
-					mDevices = mDevices->next;
-					delete p;
-				} else {
-					pt->next = p->next;
-					p->next = NULL;
-					delete p;
-				}
-				break;
+	if (hasDeviceDel) {
+		for (int i = 0; i < mWillRemoveDevicesCount; i ++) {
+			struct Device *pt = NULL;
+			p = mDevices;
+			if (mWillRemoveDevices[i] != NULL) {
+				LOGE("[%s][%d] == > i = %d mWillRemoveDevice = 0X%0X", __FUNCTION__, __LINE__, i, mWillRemoveDevices[i]);
+				do {
+					if (p == mWillRemoveDevices[i]) {
+						if (p == mDevices) {
+							mDevices = mDevices->next;
+							delete p;
+						} else {
+							pt->next = p->next;
+							p->next = NULL;
+							delete p;
+						}
+						break;
+					}
+					pt = p;
+					p = p->next;
+				} while (p);
 			}
-			pt = p;
-			p = p->next;
-		} while (p);
+		}
 	}
+	mWillRemoveDevicesCount = hasDeviceDel = 0;
 	p = mDevices;
 #else
 	if (mDevices.size() == 0) {
@@ -509,7 +538,7 @@ int EventHub::readDevice(Device *device, RawEvent *buffer, int bufferSize) {
 				errno = %d (%s)",
 				__FUNCTION__, __LINE__, device->fd, readSize, bufferSize, errno,
 				strerror(errno));
-		closeDeviceLocked(device);
+		//closeDeviceLocked(device);
 	} else if (readSize < 0) {
 		LOGE("[%s][%d] ==> could not get event error = %d (%s)", __FUNCTION__,
 				__LINE__, errno, strerror(errno));
@@ -604,16 +633,27 @@ int EventHub::readNotifyLocked() {
 				//openDeviceLocked(devName);
 				if (mABSInputAdapter != NULL) {
 					mABSInputAdapter->deviceAdded(devName);
+					if (willAddDevicePathCount > 10) {
+						LOGE("[%s][%d] ==> device add too more", __FUNCTION__, __LINE__);
+					} else {
+						strcpy(willAddDevicePath[willAddDevicePathCount++], devName);
+					}
 				}
 			} else {
 				LOGE("[%s][%d] ==> removed event %s", __FUNCTION__, __LINE__, devName);
 				//closeDeviceByPathLocked(devName);
-				mWillRemoveDevices =getDeviceByPathLocked(devName);
+				if (mWillRemoveDevicesCount > 10) {
+					LOGE("[%s][%d] ==> device remove too more", __FUNCTION__, __LINE__);
+				} else {
+					mWillRemoveDevices[mWillRemoveDevicesCount++] =getDeviceByPathLocked(devName);
+				}
 			}
 		}
 		event_size = sizeof(*event) + event->len;
 		res -= event_size;
 		event_pos += event_size;
+		hasDeviceAdded = willAddDevicePathCount;
+		hasDeviceDel = mWillRemoveDevicesCount;
 	}
 
 	return 0;

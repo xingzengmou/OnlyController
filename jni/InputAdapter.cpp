@@ -177,6 +177,17 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer, char *conf
 			mKeyManager->processKeys(eventBuffer, configFileName);
 			break;
 		case EV_ABS:
+			if (eventBuffer->scanCode == 0 || eventBuffer->scanCode == 1
+					|| eventBuffer->scanCode == 2 || eventBuffer->scanCode == 5) {
+				//ABS_X = 0, ABS_Y = 1, ABS_Z = 2, ABS_RZ = 5
+				//右遥感
+				//向右是ABS_Z = 02   0X7F为中心,向右就>7F,向左小于7F
+				//向上时ABS_RZ = 05  0x7f为中心，向下〉7F，向上<7F
+				//左遥感
+				//横向：ABS_X = 0X00  0X7F为中心,向右就>7F,向左小于7F
+				//纵向：ABS_Y = 0X01  0x7f为中心，向下〉7F，向上<7F
+				mJoystick->joystickProcess(eventBuffer, configFileName);
+			}
 			break;
 		}
 		eventBuffer ++;

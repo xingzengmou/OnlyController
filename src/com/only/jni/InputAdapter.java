@@ -37,7 +37,7 @@ public class InputAdapter {
 			}
 		}
 	}
-	
+	 
 	public static void onInputAdapterKeyUp(int scanCode, int value, String configFileName) {
 		Log.e(TAG, "onInputAdapterKeyUp  scanCode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
 		for(KeyConfiguration kc : listKeyConfiguration) {
@@ -69,7 +69,7 @@ public class InputAdapter {
 				Root.chmod(cmd);
 				try {
 					Thread.sleep(1000);
-					openDeviceLocked(devPath);
+					//openDeviceLocked(devPath);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

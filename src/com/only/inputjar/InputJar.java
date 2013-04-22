@@ -164,10 +164,10 @@ public class InputJar {
 		String cmd = "";
 		if (fVersion <= 4.0) {
 			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput.jar");
-			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput &";
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput.jar; exec app_process /system/bin com.only.input.OnlyInput";
 		} else {
 			Log.e(TAG, "your os version is = " + fVersion + " so inputjar is OnlyInput_above_4.0.jar");
-			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput_above_4.0.jar; exec app_process /system/bin com.only.input.OnlyInput &";
+			cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/data/inputjar/OnlyInput_above_4.0.jar; exec app_process /system/bin com.only.input.OnlyInput";
 		}
 		Root.execCmmd(cmd);
 	}
