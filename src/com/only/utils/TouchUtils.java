@@ -103,7 +103,7 @@ public class TouchUtils {
 						cmd += profile.posX + ":" + profile.posY + ":";
 					}
 					cmd = cmd.substring(0, cmd.length() - 1);
-					Log.e(TAG, "cmd = " + cmd + " touch down");
+					Log.e(TAG, "sendTouchMapDown cmd = " + cmd + " touch down");
 					netSocket.send(cmd);
 					return true;
 				}
@@ -112,30 +112,61 @@ public class TouchUtils {
 		return false;
 	}
 	
+	public static boolean sendTouchMapDown(Profile profile) {
+		synchronized(mapListDown) {
+			boolean replaced = false;
+			for (Profile p : mapListDown) {
+				if (p == profile) {
+					mapListDown.remove(p);
+					mapListDown.add(profile);
+					replaced = true;
+				}
+			}
+			if (!replaced) mapListDown.add(profile);
+			String cmd = "injectTouch:" + mapListDown.size() + ":" + MotionEvent.ACTION_DOWN + ":";
+			cmd += profile.posX + ":" + profile.posY + ":";
+			cmd = cmd.substring(0, cmd.length() - 1);
+			Log.e(TAG, "sendTouchMapDown override cmd = " + cmd + " touch down");
+			netSocket.send(cmd);
+		}
+		return true;
+	}
+	
 	public static boolean sendTouchMapUp(InputAdapterKeyEvent event) {
 		synchronized(mapListDown) {
+			for (Profile profile : mapListDown) {
+				String cmd = "injectTouch:" + mapListUp.size() + ":" + MotionEvent.ACTION_UP + ":";
+				if (profile.key == event.keyCode) {
+					cmd += profile.posX + ":" + profile.posY + ":";
+				}
+				cmd = cmd.substring(0, cmd.length() - 1);
+				Log.e(TAG, "cmd = " + cmd + " touch up");
+				netSocket.send(cmd);
+			}
+			
 			for (Profile profile : mapListDown) {
 				if (profile.key == event.keyCode) {
 					mapListUp.add(profile);
 				}
 			}
 			
-			if (mapListUp.size() > 0) {
-				String cmd = "injectTouch:" + mapListUp.size() + ":" + MotionEvent.ACTION_UP + ":";
-				for (Profile profile : mapListUp) {
-					cmd += profile.posX + ":" + profile.posY + ":";
-					synchronized (mapListDown) {
-						mapListDown.remove(profile);
-					}
-				}
-				mapListUp.clear();
-				cmd = cmd.substring(0, cmd.length() - 1);
-				Log.e(TAG, "cmd = " + cmd + " touch up");
-				netSocket.send(cmd);
-				return true;
+			for (Profile profile : mapListUp) {
+				mapListDown.remove(profile);
 			}
 		}
 		return false;
+	}
+	
+	public static boolean sendTouchMapUp(Profile profile) {
+		synchronized(mapListDown) {
+			String cmd = "injectTouch:" + mapListUp.size() + ":" + MotionEvent.ACTION_UP + ":";
+			cmd += profile.posX + ":" + profile.posY + ":";
+			cmd = cmd.substring(0, cmd.length() - 1);
+			Log.e(TAG, "cmd = " + cmd + " touch up");
+			netSocket.send(cmd);
+			mapListDown.remove(profile);
+		}
+		return true;
 	}
 	
 	private static Thread touchEventLooper = new Thread(new Runnable(){

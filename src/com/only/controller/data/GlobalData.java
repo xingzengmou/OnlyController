@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.only.touch.Profile;
+
 import android.view.KeyEvent;
 
 public class GlobalData {
@@ -142,6 +144,7 @@ public class GlobalData {
 	public static Map<String, Integer> intKeyMapCache = new HashMap<String, Integer>();
 	public static List<Map<String, Object>> listCache = new ArrayList<Map<String, Object>> ();
 	public static String currentConfigurationXML = "null";
+	public static List<Profile> keyList;
 	public static int joystickAreaCheckKey = KeyEvent.KEYCODE_VOLUME_UP; //Joystick区域确认按键
 	/**
 	 * Game configuration file state

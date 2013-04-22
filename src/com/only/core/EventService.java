@@ -69,7 +69,6 @@ public class EventService extends Service {
 	private int backKeyCount = 0;
 	private boolean touched = false;
 	private int oldKey;
-	public List<Profile> keyList;
 	private boolean noTouchData = true;
 	private boolean debug = true;
 	private Position bop;
@@ -276,16 +275,16 @@ public class EventService extends Service {
 			GlobalData.intKeyMapCache.put(GlobalData.keyAppName[i] + "_INT", sp.getInt(GlobalData.keyAppName[i] + "_INT", 0));
 		}
 		
-		if (keyList != null) keyList.clear();
-		keyList = null;
-		keyList = TouchUtils.loadFile(GlobalData.currentConfigurationXML + ".tp");
+		if (GlobalData.keyList != null) GlobalData.keyList.clear();
+		GlobalData.keyList = null;
+		GlobalData.keyList = TouchUtils.loadFile(GlobalData.currentConfigurationXML + ".tp");
 	} 
 
 	private void startTouchConfigurationView() {
 //		Log.e(TAG, "startTouchConfigurationView packageIsRunning = " + packageIsRunning); 
 		if (!packageIsRunning) return;
-		keyList = null;
-		keyList = new ArrayList<Profile>();
+		GlobalData.keyList = null;
+		GlobalData.keyList = new ArrayList<Profile>();
 		Dialog tpDialogView = new Dialog(context,  R.style.selectorDialog);
 		tpDialogView.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		tpDialogView.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
@@ -387,7 +386,7 @@ public class EventService extends Service {
 				mProfile.posY = screenView.getTouchY();
 				mProfile.posR = screenView.getTouchR();
 				mProfile.posType = screenView.getCircleType();
-				keyList.add(mProfile);
+				GlobalData.keyList.add(mProfile);
 //				if (event.getKeyCode() != GlobalData.joystickAreaCheckKey) { 
 				oldKey = event.getKeyCode();
 //				}
@@ -777,22 +776,22 @@ public class EventService extends Service {
 	private void saveFile(String path) {
 		try {
 			FileOutputStream fos = context.openFileOutput(path, Context.MODE_PRIVATE);
-			if (keyList != null) {
-				for (int i = 0; i < keyList.size(); i ++) {
-					fos.write(String.valueOf(keyList.get(i).key).getBytes());
+			if (GlobalData.keyList != null) {
+				for (int i = 0; i < GlobalData.keyList.size(); i ++) {
+					fos.write(String.valueOf(GlobalData.keyList.get(i).key).getBytes());
 					fos.write("\n".getBytes());
-					fos.write(String.valueOf(keyList.get(i).posX).getBytes());
+					fos.write(String.valueOf(GlobalData.keyList.get(i).posX).getBytes());
 					fos.write("\n".getBytes());
-					fos.write(String.valueOf(keyList.get(i).posY).getBytes());
+					fos.write(String.valueOf(GlobalData.keyList.get(i).posY).getBytes());
 					fos.write("\n".getBytes());
-					fos.write(String.valueOf(keyList.get(i).posR).getBytes());
+					fos.write(String.valueOf(GlobalData.keyList.get(i).posR).getBytes());
 					fos.write("\n".getBytes());
-					fos.write(String.valueOf(keyList.get(i).posType).getBytes());
+					fos.write(String.valueOf(GlobalData.keyList.get(i).posType).getBytes());
 					fos.write("\n".getBytes());
 				}
 			}
 			fos.close();
-			TouchUtils.setTouchList(keyList);
+			TouchUtils.setTouchList(GlobalData.keyList);
 			Toast.makeText(context, context.getString(R.string.save_to) + GlobalData.currentConfigurationXML + ".tp", Toast.LENGTH_SHORT).show();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block 
