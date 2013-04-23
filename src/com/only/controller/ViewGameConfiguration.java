@@ -37,7 +37,7 @@ public class ViewGameConfiguration implements OnClickListener {
 	private static final String TAG = "ViewGameConfiguration";
 	
 	private LayoutInflater inflater;
-	private View view = null;
+//	private View view = null;
 	private LinearLayout lyContent = null;
 	private View menuView = null;
 	private TextView tvEnableKeyConfig;
@@ -113,7 +113,7 @@ public class ViewGameConfiguration implements OnClickListener {
 	
 	public void addGameView(Object data) {
 		Map<String, Object> map = (Map<String, Object>) data;
-		view = inflater.inflate(R.layout.view_game_config_files_phone_portrait, null);
+		View view = inflater.inflate(R.layout.view_game_config_files_phone_portrait, null);
 		view.setOnClickListener(this);
 		ImageView ivIcon = (ImageView) view.findViewById(R.id.icon_iv);
 		ivIcon.setBackgroundDrawable((Drawable)map.get("icon"));
@@ -123,10 +123,10 @@ public class ViewGameConfiguration implements OnClickListener {
 		tvKeyConfig.setText(map.get("packageName").toString() + ".xml");
 		TextView tvTouchConfig = (TextView) view.findViewById(R.id.touch_file_name_tv);
 		tvTouchConfig.setText(map.get("packageName").toString() + ".tp");
-		tvEnableKeyConfig = (TextView) view.findViewById(R.id.tv_key_file_state);
-		tvEnableKeyConfig.setText(map.get("keyFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
-		tvEnableTouchConfig = (TextView) view.findViewById(R.id.tv_touch_file_state);
-		tvEnableTouchConfig.setText(map.get("touchFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
+		TextView tvEnableKeyConfig1 = (TextView) view.findViewById(R.id.tv_key_file_state);
+		tvEnableKeyConfig1.setText(map.get("keyFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
+		TextView tvEnableTouchConfig1 = (TextView) view.findViewById(R.id.tv_touch_file_state);
+		tvEnableTouchConfig1.setText(map.get("touchFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
 		view.setTag(map);
 		lyContent.addView(view);
 	}
@@ -135,11 +135,12 @@ public class ViewGameConfiguration implements OnClickListener {
 		lyContent.setVisibility(View.GONE);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onClick(View arg0) {
 		// TODO Auto-generated method stub
-		tvEnableKeyConfig = (TextView) view.findViewById(R.id.tv_key_file_state);
-		tvEnableTouchConfig = (TextView) view.findViewById(R.id.tv_touch_file_state);
+		tvEnableKeyConfig = (TextView) arg0.findViewById(R.id.tv_key_file_state);
+		tvEnableTouchConfig = (TextView) arg0.findViewById(R.id.tv_touch_file_state);
 		smap = (Map<String, Object>) arg0.getTag();
 		packageLabel = smap.get("label").toString();
 		packageNameXML = smap.get("packageName").toString();
@@ -167,13 +168,19 @@ public class ViewGameConfiguration implements OnClickListener {
 				lyContent.getContext().startActivity(mIntent);
 				loadKeyMapConfigurationToCache();
 			} else if (btnEnableKeyMap.equals(v)) {
-				mGameConfigurationState.setKeyConfigurationState(packageNameXML, smap.get("keyFileState").toString().contains("true") ? "false" : "true");
+				String keyState = smap.get("keyFileState").toString().contains("true") ? "false" : "true";
+				mGameConfigurationState.setKeyConfigurationState(packageNameXML, keyState);
+				smap.put("keyFileState", keyState);
 				tvEnableKeyConfig.setText(smap.get("keyFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
 				btnEnableKeyMap.setText(smap.get("keyFileState").toString().contains("true") ? R.string.btn_disable_key_file_config : R.string.btn_enable_key_file_config);
 			} else if (btnEnableTouchMap.equals(v)) {
-				mGameConfigurationState.setKeyConfigurationState(packageNameXML, smap.get("touchFileState").toString().contains("true") ? "false" : "true");
+				String touchState = smap.get("touchFileState").toString().contains("true") ? "false" : "true";
+				mGameConfigurationState.setTouchConfigurationState(packageNameXML, touchState);
+				smap.put("touchFileState", touchState);
 				tvEnableTouchConfig.setText(smap.get("touchFileState").toString().contains("true") ? R.string.tv_key_file_state_enable : R.string.tv_key_file_state_disable);
 				btnEnableTouchMap.setText(smap.get("touchFileState").toString().contains("true") ? R.string.btn_disable_touch_file_config : R.string.btn_enable_touch_file_config);
+			} else if (btnRemoveGame.equals(v)) {
+				
 			}
 			menuDialog.cancel();
 		}
