@@ -78,6 +78,7 @@ public class EventService extends Service {
 	private boolean hasLeftJoystick = false;
 	private boolean hasRightJoystick = false;
 	private boolean tpconfiging = false;
+	private static Handler mJoystickHandler;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -102,6 +103,9 @@ public class EventService extends Service {
 		thiz = activity;
 	}
 	
+	public static void setJoystickHandler(Handler handler) {
+		mJoystickHandler = handler;
+	}
 
 	private void envInit() {
 			// TODO Auto-generated method stub
@@ -112,16 +116,9 @@ public class EventService extends Service {
 					InputAdapter.openEvent();
 					InputAdapter.start();
 				}
-//				try {
-//					Thread.sleep(SystemClock.uptimeMillis() + 5000);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
 				Log.e(TAG, "inputjar running will to connect netsocket");
 				if (!netSocket.connectService()) {
 					mHandler.sendEmptyMessage(EventHandler.MSG_CONNECT_INPUT_JAR_FAILED);
-				} else {
-////					netSocket.send("injectpointer:3:3222.44422:44232.55555:44.000:666.000:333.21233:443.000");
 				}
 				mHandler.sendEmptyMessage(EventHandler.MSG_INPUTJAR_CONNECTED);
 			} else {

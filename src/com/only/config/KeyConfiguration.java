@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 public class KeyConfiguration {
 	private static final String TAG = "KeyConfiguration";
 	private static final String KEYLAYOUT_DIR = "/system/usr/keylayout/";
+	private static final String DEFAULT_KEYLAYOUT_PATH = "/system/usr/keylayout/Generic.kl";
 	
 	private File configFile = null;
 	private String configPath = null;
@@ -27,9 +28,16 @@ public class KeyConfiguration {
 		this.configFileName = configFileName;
 		configPath = KEYLAYOUT_DIR + configFileName + ".kl";
 		configFile = new File(configPath);
+		String usingFile = configFileName;
 		if (!configFile.exists()) {
-			configFile = null;
+			configFile = new File(DEFAULT_KEYLAYOUT_PATH);
+			usingFile = DEFAULT_KEYLAYOUT_PATH;
+			if (!configFile.exists()) {
+				configFile = null;
+				usingFile = null;
+			}
 		}
+		Log.e(TAG, "configFileName = " + this.configFileName + " using = " + usingFile);
 	}
 	
 	public String getConfigFileName() {
@@ -48,21 +56,30 @@ public class KeyConfiguration {
 			BufferedReader br = new BufferedReader(new FileReader(configFile));
 			String line = br.readLine();
 			while (line != null) {
-				if (line.getBytes()[0] == '#') {
+				if (!line.trim().isEmpty() && line.getBytes()[0] == '#') {
 					Log.e(TAG, "# line = " + line);
 				} else {
-					String[] list = line.split(" ");
-					int i = 0;
-					for (String str: list) {
-						if (!str.trim().isEmpty()) {
-							list[i] = str.trim();
-							i++;
+					int pos = line.indexOf(" ");
+					if (pos > 0) {
+						String[] list = new String[3];
+						list[0] = line.substring(0, pos);
+						String t = line.substring(pos + 1);
+						pos = t.indexOf(" ");
+						if (pos > 0) {
+							list[1] = t.substring(0, t.indexOf(" "));
+							t = t.substring(pos + 1);
+							pos = t.indexOf(" ");
+							if (pos > 0) {
+								list[2] = t.substring(0, pos);
+								keyMap(list, 3);
+							}
 						}
-					}
-					keyMap(list, i);
+					}  
 				}
 				line = br.readLine();
-			}
+				if (line != null)
+				Log.e(TAG, "LINE = " + line + " isEmpty = " + line.trim().isEmpty());
+			}  
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,6 +91,7 @@ public class KeyConfiguration {
 	}
 	
 	private void keyMap(String[] keyList, int listSize) {
+		Log.e(TAG, "keyList.size = " + keyList);
 		String scanCodeStr = keyList[1].trim();
 		String mapKey = keyList[2].trim();
 		Log.e(TAG, "scancodestr = " + scanCodeStr + " mapKey = " + mapKey);

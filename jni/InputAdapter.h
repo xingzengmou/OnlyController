@@ -83,8 +83,10 @@ public:
 #ifdef BUILD_NDK
 	int thread_exit;
 #endif
-	static const int EVENT_BUFFER_SIZE = 256;
+	static const int EVENT_BUFFER_SIZE = 128;
 	RawEvent mEventBuffer[EVENT_BUFFER_SIZE];
+	RawEvent mFIFOEventBuffer[EVENT_BUFFER_SIZE];
+	int mFIFOIndex;
 };
 
 #ifdef BUILD_NDK

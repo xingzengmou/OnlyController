@@ -51,8 +51,8 @@ public class InputAdapter {
 		}
 	}
 	
-	public static void onInputAdapterJoystickChange(int scanCode, int value, String configFileName) {
-		Log.e(TAG, "onInputAdapterJoystickChange  scanCode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
+	public static void onInputAdapterJoystickChange(int joystickType, int x, int y, String configFileName) {
+		Log.e(TAG, "onInputAdapterJoystickChange  joystickType = " + joystickType + " x = " + x + " y = " + y + " configFileName = " + configFileName);
 	}
 	
 	public static void onDeviceAdded(String devName) {

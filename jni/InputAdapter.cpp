@@ -24,6 +24,8 @@ int InputAdapter::init() {
 	mDeviceManager = DeviceManager::create();
 	mEventHub->setInputAdapter(this);
 	memset(confFileName, 0, sizeof(confFileName));
+	memset(mFIFOEventBuffer, 0, EVENT_BUFFER_SIZE);
+	mFIFOIndex = 0;
 #ifdef BUILD_NDK
 	thread_exit = 0;
 #else
@@ -171,22 +173,42 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer, char *conf
 #if DEBUG_SWITCH
 		dumpRawEvent(eventBuffer);
 #endif
+		RawEvent event;
+		memcpy(&mFIFOEventBuffer[mFIFOIndex++], eventBuffer, sizeof(RawEvent));
+		if (mFIFOIndex >= EVENT_BUFFER_SIZE) mFIFOIndex = 0;
 		switch (eventBuffer->type) {
-		case EV_KEY:
-			LOGE("[%s][%d] ==> processKeys code = %d  configFileName = %s", __FUNCTION__, __LINE__, eventBuffer->scanCode, configFileName);
-			mKeyManager->processKeys(eventBuffer, configFileName);
-			break;
-		case EV_ABS:
-			if (eventBuffer->scanCode == 0 || eventBuffer->scanCode == 1
-					|| eventBuffer->scanCode == 2 || eventBuffer->scanCode == 5) {
-				//ABS_X = 0, ABS_Y = 1, ABS_Z = 2, ABS_RZ = 5
-				//右遥感
-				//向右是ABS_Z = 02   0X7F为中心,向右就>7F,向左小于7F
-				//向上时ABS_RZ = 05  0x7f为中心，向下〉7F，向上<7F
-				//左遥感
-				//横向：ABS_X = 0X00  0X7F为中心,向右就>7F,向左小于7F
-				//纵向：ABS_Y = 0X01  0x7f为中心，向下〉7F，向上<7F
-				mJoystick->joystickProcess(eventBuffer, configFileName);
+		case EV_SYN:
+			for (int i = 0; i < mFIFOIndex; i ++) {
+				if (mFIFOEventBuffer[i].type == EV_KEY) {
+					LOGE("[%s][%d] ==> processKeys code = %d  configFileName = %s", __FUNCTION__, __LINE__, eventBuffer->scanCode, configFileName);
+					mKeyManager->processKeys(eventBuffer, configFileName);
+				} else if (mFIFOEventBuffer[i].type == EV_ABS) {
+					//ABS_X = 0, ABS_Y = 1, ABS_Z = 2, ABS_RZ = 5
+					//右遥感
+					//向右是ABS_Z = 02   0X7F为中心,向右就>7F,向左小于7F
+					//向上时ABS_RZ = 05  0x7f为中心，向下〉7F，向上<7F
+					//左遥感
+					//横向：ABS_X = 0X00  0X7F为中心,向右就>7F,向左小于7F
+					//纵向：ABS_Y = 0X01  0x7f为中心，向下〉7F，向上<7F
+					if (mFIFOEventBuffer[i].scanCode == ABS_X) {
+						event.joystickType = 1; // left joystick
+						event.x = mFIFOEventBuffer[i].value;
+					} else if (mFIFOEventBuffer[i].scanCode == ABS_Y) {
+						event.joystickType = 1; // left joystick
+						event.y = mFIFOEventBuffer[i].value;
+					} else if (mFIFOEventBuffer[i].scanCode == ABS_Z) {
+						event.joystickType = 2; // right joystick
+						event.x = mFIFOEventBuffer[i].value;
+					} else if (mFIFOEventBuffer[i].scanCode == ABS_RZ) {
+						event.joystickType = 2; // right joystick
+						event.y = mFIFOEventBuffer[i].value;
+					}
+				}
+			}
+			mFIFOIndex = 0;
+			memset(mFIFOEventBuffer, 0, EVENT_BUFFER_SIZE);
+			if (event.joystickType > 0) {
+				mJoystick->joystickProcess(&event, configFileName);
 			}
 			break;
 		}

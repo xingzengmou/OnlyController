@@ -63,6 +63,11 @@ struct RawEvent {
     int32_t value;
     uint32_t flags;
     uint8_t count;
+
+    //Joystick data
+    int joystickType;
+    int8_t x;
+    int8_t y;
 };
 
 enum TOUCH_TYPE {

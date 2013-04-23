@@ -4,15 +4,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.only.controller.InputAdapterKeyEvent;
 import com.only.controller.data.GlobalData;
+import com.only.core.EventService;
 import com.only.touch.Position;
 import com.only.touch.Profile;
 import com.only.utils.TouchUtils;
 
 public class JoystickDataAnalysist {
 	private static final String TAG = "JoystickDataAnalysist";
-	private static final int MSG_JOYSTICK_RIGHT_DATA = 0X01;
-	private static final int MSG_JOYSTICK_LEFT_DATA = 0X02;
+	public static final int MSG_JOYSTICK_RIGHT_DATA = 0X01;
+	public static final int MSG_JOYSTICK_LEFT_DATA = 0X02;
 	private static boolean rightMotionKey = false;
 	private static boolean leftMotionKey = false;
 	private static float rightJoystickCurrentPosX = 0.0f;
@@ -24,6 +26,10 @@ public class JoystickDataAnalysist {
 	private static float leftJoystickCurrentR = 0.0f;
 	private static Profile rightJoystickProfile = null;
 	private static Profile leftJoystickProfile = null;
+	
+	public static void init() {
+		EventService.setJoystickHandler(joystickHandler);
+	}
 	
 	private static  double calcSinA(int bx, int by, int joystickType) {
 		 int ox = 0x7f;
@@ -226,6 +232,7 @@ public class JoystickDataAnalysist {
 		 public void handleMessage(Message msg) {
 			 switch (msg.what) {
 			 case MSG_JOYSTICK_RIGHT_DATA:
+				 InputAdapterKeyEvent event = (InputAdapterKeyEvent) msg.obj;
 				 
 				 break;
 			 case MSG_JOYSTICK_LEFT_DATA:
