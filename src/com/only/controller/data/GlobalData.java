@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.only.config.KeyConfiguration;
 import com.only.touch.Profile;
 
 import android.view.KeyEvent;
@@ -145,7 +146,8 @@ public class GlobalData {
 	public static List<Map<String, Object>> listCache = new ArrayList<Map<String, Object>> ();
 	public static String currentConfigurationXML = "null";
 	public static List<Profile> keyList;
-	public static int joystickAreaCheckKey = KeyEvent.KEYCODE_VOLUME_UP; //JoystickÇøÓòÈ·ÈÏ°´¼ü
+	public static int joystickAreaCheckKey = KeyEvent.KEYCODE_VOLUME_UP; //Joystickï¿½ï¿½ï¿½ï¿½È·ï¿½Ï°ï¿½ï¿½ï¿½
+	public static List<KeyConfiguration> listKeyConfiguration = new ArrayList<KeyConfiguration>();
 	/**
 	 * Game configuration file state
 	 */

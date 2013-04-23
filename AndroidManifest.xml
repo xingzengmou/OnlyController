@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />  
     <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW" /> 
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
       
     <application
         android:allowBackup="true"
@@ -40,6 +41,13 @@
                 <action android:name="com.only.core.EventService"/>
             </intent-filter>
         </service>
+        <service android:name="OnlyInputMethodService"
+    			 android:permission="android.permission.BIND_INPUT_METHOD">
+    		<intent-filter>
+    			<action android:name="android.view.InputMethod"/>
+    		</intent-filter>		 
+    		<meta-data android:name="android.view.im" android:resource="@xml/method"/>
+    	</service>
     </application>
 
 </manifest>

@@ -52,10 +52,12 @@ import android.widget.Toast;
 
 public class OnlyMainActivity extends Activity {
 	private static final String TAG = "OnlyMainActivity";
-	private static final int MSG_CONNECT_INPUT_JAR_FAILED = 0x01;
-	private static final int MSG_ROOT_FAILED = 0x02;
-	private static final int MSG_ROOTED = 0x03;
-	private static final int MSG_INPUTJAR_CONNECTED = 0x04;
+	public static final int MSG_CONNECT_INPUT_JAR_FAILED = 0x01;
+	public static final int MSG_ROOT_FAILED = 0x02;
+	public static final int MSG_ROOTED = 0x03;
+	public static final int MSG_INPUTJAR_CONNECTED = 0x04;
+	public static final int MSG_SDCARD_UNMOUNTED = 0X05;
+	public static final int MSG_MKDIR_INPUTJAR_ERROR = 0X06;
 
 	/**
 	 * Buttons define
@@ -108,6 +110,7 @@ public class OnlyMainActivity extends Activity {
 		appListView.setOnItemClickListener(appsListViewOnItemClickListener);
 		newView();
 		loadKeyMapConfigurationToCache();
+		InputJar.setHandler(mHandler);
 		EventService.setActivity(this);
 		Intent intent = new Intent(this, EventService.class);
 		this.startService(intent);
@@ -200,6 +203,7 @@ public class OnlyMainActivity extends Activity {
 						thiz.finish();
 					}
 				});
+				b.setCancelable(false);
 				b.show();
 				break;
 			case MSG_ROOT_FAILED:
@@ -213,6 +217,7 @@ public class OnlyMainActivity extends Activity {
 						thiz.finish();
 					}
 				});
+				b1.setCancelable(false);
 				b1.show();
 				break;
 			case MSG_ROOTED:
@@ -221,6 +226,34 @@ public class OnlyMainActivity extends Activity {
 			case MSG_INPUTJAR_CONNECTED:
 //				ControllerCore.start(thiz);
 				Log.e(TAG, "controllercore.start");
+				break;
+			case MSG_SDCARD_UNMOUNTED:
+				AlertDialog.Builder sdErrorDialog = new AlertDialog.Builder(thiz);
+				sdErrorDialog.setMessage(R.string.external_starage_has_unmounted);
+				sdErrorDialog.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						thiz.finish();
+					}
+				});
+				sdErrorDialog.setCancelable(false);
+				sdErrorDialog.show();;
+				break;
+			case MSG_MKDIR_INPUTJAR_ERROR:
+				AlertDialog.Builder dirErrorDialog = new AlertDialog.Builder(thiz);
+				dirErrorDialog.setMessage(R.string.make_sdcard_input_jar_dir_error);
+				dirErrorDialog.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						thiz.finish();
+					}
+				});
+				dirErrorDialog.setCancelable(false);
+				dirErrorDialog.show();
 				break;
 			}
 		}

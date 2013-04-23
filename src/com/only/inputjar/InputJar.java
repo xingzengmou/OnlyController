@@ -17,27 +17,28 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.WindowManager;
 
+import com.only.controller.OnlyMainActivity;
 import com.only.controller.R;
 import com.only.root.Root;
 
 public class InputJar {
 	private static final String TAG = "InputJar";
+	private static Handler mHandler;
+	
+	public static void setHandler(Handler handler) {
+		mHandler = handler;
+	}
 	
 	public static boolean run(final Activity thiz) {
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-			AlertDialog.Builder b = new AlertDialog.Builder(thiz);
-			b.setMessage(R.string.external_starage_has_unmounted);
-			b.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					thiz.finish();
-				}
-			});
-			b.show();
+			if (mHandler != null) {
+				mHandler.sendEmptyMessage(OnlyMainActivity.MSG_SDCARD_UNMOUNTED);
+			}
 		} else {
 			copyInputJarFile(thiz);
 			runInputJar();
@@ -70,17 +71,9 @@ public class InputJar {
 			}
 		} else {
 			if (!dir.mkdir()) {
-				AlertDialog.Builder b = new AlertDialog.Builder(thiz);
-				b.setMessage(R.string.make_sdcard_input_jar_dir_error);
-				b.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						thiz.finish();
-					}
-				});
-				b.show();
+				if (mHandler != null) {
+					mHandler.sendEmptyMessage(OnlyMainActivity.MSG_MKDIR_INPUTJAR_ERROR);
+				}
 			} else {
 				copyInputJarFileFromAssertToSDCARD(thiz);
 				copyInputJarFileFromSDCARDToData();

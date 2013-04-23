@@ -44,5 +44,7 @@
     <string name="tv_key_file_state_disable">已关闭</string>
    	<string name="tv_key_file_state_enable">已打开</string>
    	<string name="save_to">已保存为</string>
+   	<string name="ime_switchon">欧力游戏输入法启动</string>
+    <string name="ime_switchoff">欧力游戏输入法关闭</string>
 
 </resources>

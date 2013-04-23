@@ -24,10 +24,6 @@ public class netSocket {
 	private static int port = 6000;
 	private static InetAddress mInetAddress;
 	
-	private static DatagramSocket mKeySocket;
-	private static int keyPort = 6100;
-	private static InetAddress mKeyInetAddress;
-	
 	private static boolean useUDP = true;
 	
 	public static boolean connectService() {
@@ -60,9 +56,7 @@ public class netSocket {
 			public void run() {
 				try {
 					mDatagramSocket = new DatagramSocket();
-					mKeySocket = new DatagramSocket();
 					mInetAddress = InetAddress.getByName("localhost");
-					mKeyInetAddress = InetAddress.getByName("localhost");
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -99,11 +93,8 @@ public class netSocket {
 					DatagramPacket dp = new DatagramPacket(gMsg, gMsg.length, mInetAddress, port);
 					try {
 						mDatagramSocket.send(dp);
-						Thread.sleep(200);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InterruptedException e) {
+//						Thread.sleep(200);
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -121,46 +112,4 @@ public class netSocket {
 		Log.e(TAG, "send finish");
 	}
 	
-	public static synchronized void sendKeyMapData(final String content) {
-		Thread sendThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				if (!useUDP) {
-					pw.println(content);
-					pw.flush();
-					try {
-						Log.e(TAG, "get from service = " + dis.readLine());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else {
-					String cmd = content + "                       ";
-					Log.e(TAG, "sendKeyMapData cmd = " + cmd);
-					DatagramPacket dp = new DatagramPacket(cmd.getBytes(), cmd.length(), mKeyInetAddress, keyPort);
-					try {
-						mKeySocket.send(dp);
-						Thread.sleep(200);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		});
-		sendThread.start();
-		try {
-			sendThread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.e(TAG, "send finish");
-	}
 }

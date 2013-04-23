@@ -1,6 +1,7 @@
 package com.only.controller;
 
 public class InputAdapterKeyEvent {
+	public String configFile;
 	public int scanCode;
 	public int keyCode;
 	

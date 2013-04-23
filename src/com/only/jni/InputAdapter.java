@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.only.config.KeyConfiguration;
 import com.only.controller.InputAdapterKeyEvent;
+import com.only.controller.data.GlobalData;
 import com.only.core.EventService.EventHandler;
 import com.only.root.Root;
 
@@ -18,7 +19,6 @@ import android.util.Log;
  
 public class InputAdapter {
 	private static final String TAG = "InputAdapter";
-	private static List<KeyConfiguration> listKeyConfiguration = new ArrayList<KeyConfiguration>();
 	private static List<OnKeyListener> listOnKeyListener = new ArrayList<OnKeyListener>();
 	private static InputAdapterKeyEvent keyEvent = new InputAdapterKeyEvent();
 	private static Context context;
@@ -26,29 +26,16 @@ public class InputAdapter {
 	
 	public static void onInputAdapterKeyDown(int scanCode, int value, String configFileName) {
 		Log.e(TAG, "onInputAdapterKeyDown scancode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
-		for(KeyConfiguration kc : listKeyConfiguration) {
-			if (kc.getConfigFileName().equals(configFileName)) {
-				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
-				keyEvent.scanCode = scanCode;
-				keyEvent.keyCode = kc.getKeyCode(scanCode);
-				if (mHandler != null) mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_DOWN, keyEvent));
-				Log.e(TAG, "mHandler = " + mHandler);
-				break;
-			}
-		}
+		keyEvent.scanCode = scanCode;
+		keyEvent.configFile = configFileName;
+		mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_DOWN, keyEvent));
 	}
 	 
 	public static void onInputAdapterKeyUp(int scanCode, int value, String configFileName) {
 		Log.e(TAG, "onInputAdapterKeyUp  scanCode = " + scanCode + " value = " + value + " configFileName = " + configFileName);
-		for(KeyConfiguration kc : listKeyConfiguration) {
-			if (kc.getConfigFileName().equals(configFileName)) {
-				Log.e(TAG, "you presss scancode = " + scanCode + " keycode = " + kc.getKeyCode(scanCode));
-				keyEvent.scanCode = scanCode;
-				keyEvent.keyCode = kc.getKeyCode(scanCode);
-				if (mHandler != null) mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_UP, keyEvent));
-				break;
-			}
-		}
+		keyEvent.scanCode = scanCode;
+		keyEvent.configFile = configFileName;
+		mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_KEY_UP, keyEvent));
 	}
 	
 	public static void onInputAdapterJoystickChange(int joystickType, int x, int y, String configFileName) {
@@ -88,7 +75,7 @@ public class InputAdapter {
 		Log.e(TAG, "onOpenEventConfigFile configFileName = " + configFileName);
 		KeyConfiguration mKeyConfiguration = new KeyConfiguration(configFileName);
 		if (mKeyConfiguration.parse()) {
-			listKeyConfiguration.add(mKeyConfiguration);
+			GlobalData.listKeyConfiguration.add(mKeyConfiguration);
 		}
 	}
 	

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.only.config.KeyConfiguration;
 import com.only.controller.InputAdapterKeyEvent;
 import com.only.controller.R;
 import com.only.controller.data.GlobalData;
@@ -40,6 +41,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -80,11 +82,11 @@ public class EventService extends Service {
 	private boolean hasRightJoystick = false;
 	private boolean tpconfiging = false;
 	private static Handler mJoystickHandler;
-	
+	  
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return null;  
 	}
 	
 	@Override
@@ -146,7 +148,8 @@ public class EventService extends Service {
 			switch (msg.what) {
 			case MSG_KEY_DOWN:
 				event = (InputAdapterKeyEvent) msg.obj;
-				Log.e(TAG, "event.keyCode = " + event.keyCode + " tpconfiging = " + tpconfiging + " packageIsRunning = " + packageIsRunning);
+				if (!getKeyCode(event)) break; 
+				Log.e(TAG, "MSG_KEY_DOWN event.keyCode = " + event.keyCode + " tpconfiging = " + tpconfiging + " packageIsRunning = " + packageIsRunning);
 				if (!packageIsRunning) break;
 				if (event.keyCode == 25 && !tpconfiging) {
 					startTouchConfigurationView();
@@ -160,6 +163,8 @@ public class EventService extends Service {
 			case MSG_KEY_UP:
 				if (!packageIsRunning) break;
 				event = (InputAdapterKeyEvent) msg.obj;
+				if (!getKeyCode(event)) break; 
+				Log.e(TAG, "MSG_KEY_UP event.keyCode = " + event.keyCode + " tpconfiging = " + tpconfiging + " packageIsRunning = " + packageIsRunning);
 				if (!tpconfiging && !TouchUtils.sendTouchMapUp(event)) {
 					KeyUtils.sendMapKeyUp(event);
 				}
@@ -183,6 +188,7 @@ public class EventService extends Service {
 						thiz.finish();
 					}
 				});
+				b.setCancelable(false);
 				d = b.create();
 				d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 				d.show();
@@ -200,6 +206,7 @@ public class EventService extends Service {
 						thiz.finish();
 					}
 				});
+				b1.setCancelable(false);
 				d = b1.create();
 				d.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
 				d.show();
@@ -209,6 +216,18 @@ public class EventService extends Service {
 				break;
 			}
 		}
+	}
+	
+	private boolean getKeyCode(InputAdapterKeyEvent event) {
+		for(KeyConfiguration kc : GlobalData.listKeyConfiguration) {
+			Log.e(TAG, "suport keyconfiguration = " + kc.getConfigFileName());
+			if (kc.getConfigFileName().equals(event.configFile)) {
+				Log.e(TAG, "you presss scancode = " + event.scanCode + " keycode = " + kc.getKeyCode(event.scanCode));
+				event.keyCode = kc.getKeyCode(event.scanCode);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -805,5 +824,4 @@ public class EventService extends Service {
 			e.printStackTrace();
 		}
 	}
-	
 }

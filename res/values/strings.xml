@@ -48,5 +48,7 @@
     <string name="has_right_joystick">right Joystick has drew</string>
     <string name="btn_open_game">Run the Game</string>
     <string name="save_to">"Save as "</string>
+    <string name="ime_switchon">Only Game IME Switch On</string>
+    <string name="ime_switchoff">Only Game IME Switch Off</string>
 
 </resources>

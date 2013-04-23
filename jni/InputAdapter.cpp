@@ -180,16 +180,16 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer, char *conf
 		case EV_SYN:
 			for (int i = 0; i < mFIFOIndex; i ++) {
 				if (mFIFOEventBuffer[i].type == EV_KEY) {
-					LOGE("[%s][%d] ==> processKeys code = %d  configFileName = %s", __FUNCTION__, __LINE__, eventBuffer->scanCode, configFileName);
-					mKeyManager->processKeys(eventBuffer, configFileName);
+					LOGE("[%s][%d] ==> processKeys code = %d  configFileName = %s", __FUNCTION__, __LINE__, mFIFOEventBuffer[i].scanCode, configFileName);
+					mKeyManager->processKeys(&mFIFOEventBuffer[i], configFileName);
 				} else if (mFIFOEventBuffer[i].type == EV_ABS) {
 					//ABS_X = 0, ABS_Y = 1, ABS_Z = 2, ABS_RZ = 5
-					//右遥感
-					//向右是ABS_Z = 02   0X7F为中心,向右就>7F,向左小于7F
-					//向上时ABS_RZ = 05  0x7f为中心，向下〉7F，向上<7F
-					//左遥感
-					//横向：ABS_X = 0X00  0X7F为中心,向右就>7F,向左小于7F
-					//纵向：ABS_Y = 0X01  0x7f为中心，向下〉7F，向上<7F
+					//锟斤拷遥锟斤拷
+					//锟斤拷锟斤拷锟斤拷ABS_Z = 02   0X7F为锟斤拷锟斤拷,锟斤拷锟揭撅拷>7F,锟斤拷锟斤拷小锟斤拷7F
+					//锟斤拷锟斤拷时ABS_RZ = 05  0x7f为锟斤拷锟侥ｏ拷锟斤拷锟铰★拷7F锟斤拷锟斤拷锟斤拷<7F
+					//锟斤拷遥锟斤拷
+					//锟斤拷锟斤拷ABS_X = 0X00  0X7F为锟斤拷锟斤拷,锟斤拷锟揭撅拷>7F,锟斤拷锟斤拷小锟斤拷7F
+					//锟斤拷锟斤拷ABS_Y = 0X01  0x7f为锟斤拷锟侥ｏ拷锟斤拷锟铰★拷7F锟斤拷锟斤拷锟斤拷<7F
 					if (mFIFOEventBuffer[i].scanCode == ABS_X) {
 						event.joystickType = 1; // left joystick
 						event.x = mFIFOEventBuffer[i].value;

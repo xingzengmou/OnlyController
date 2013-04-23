@@ -127,7 +127,7 @@ static void doOnKeyDown(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	mInputAdapterCallBack->attachKeyEnv();
+	if (_keyEnv == NULL) mInputAdapterCallBack->attachKeyEnv();
     LOGE("_keyEnv = 0X%0X   inputCallBackField.onInputAdapterKeyDown = 0x%0x g_com_only_jni_InputAdapter_class = 0x%0x",
     		_keyEnv, inputCallBackField.onInputAdapterKeyDown, g_com_only_jni_InputAdapter_class);
     jstring configStr = _keyEnv->NewStringUTF(configFileName);
@@ -142,7 +142,7 @@ static void doOnKeyUp(int scanCode, int value, char *configFileName) {
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
 #if 1
-	mInputAdapterCallBack->attachKeyEnv();
+	if (_keyEnv == NULL) mInputAdapterCallBack->attachKeyEnv();
 	jstring configStr = _keyEnv->NewStringUTF(configFileName);
 	_keyEnv->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
                    inputCallBackField.onInputAdapterKeyUp, scanCode, value, configStr);
@@ -153,7 +153,7 @@ static void doOnKeyUp(int scanCode, int value, char *configFileName) {
 
 static void doOnJoystickDataChange(int joystickType, int x, int y, char *configFileName) {
 #if 1
-	mInputAdapterCallBack->attachEnv();
+	if (_env == NULL) mInputAdapterCallBack->attachEnv();
 	jstring configStr = _env->NewStringUTF(configFileName);
 	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
                     inputCallBackField.onInputAdapterJoystickChange, joystickType, x, y, configStr);
@@ -163,7 +163,7 @@ static void doOnJoystickDataChange(int joystickType, int x, int y, char *configF
 }
 
 static void doOnDeviceAdded(char *devName) {
-	mInputAdapterCallBack->attachEnv();
+	if (_env == NULL) mInputAdapterCallBack->attachEnv();
 	jstring configStr = _env->NewStringUTF(devName);
 	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,
 						inputCallBackField.onDeviceAdded, configStr);
@@ -172,7 +172,7 @@ static void doOnDeviceAdded(char *devName) {
 }
 
 static void doOnOpenEventConfigFile(char *configFileName) {
-	mInputAdapterCallBack->attachEnv();
+	if (_env == NULL) mInputAdapterCallBack->attachEnv();
 	LOGE("[%s][%d] ==> _env = 0x%0x", __FUNCTION__, __LINE__, _env);
 	jstring configStr = _env->NewStringUTF(configFileName);
 	_env->CallStaticVoidMethod(g_com_only_jni_InputAdapter_class,

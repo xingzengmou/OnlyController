@@ -59,22 +59,14 @@ public class KeyConfiguration {
 				if (!line.trim().isEmpty() && line.getBytes()[0] == '#') {
 					Log.e(TAG, "# line = " + line);
 				} else {
-					int pos = line.indexOf(" ");
-					if (pos > 0) {
-						String[] list = new String[3];
-						list[0] = line.substring(0, pos);
-						String t = line.substring(pos + 1);
-						pos = t.indexOf(" ");
-						if (pos > 0) {
-							list[1] = t.substring(0, t.indexOf(" "));
-							t = t.substring(pos + 1);
-							pos = t.indexOf(" ");
-							if (pos > 0) {
-								list[2] = t.substring(0, pos);
-								keyMap(list, 3);
-							}
+					String[] list = line.split(" ");
+					int index = 0;
+					for (int i = 0; i < list.length; i ++) {
+						if (!list[i].trim().isEmpty()) {
+							list[index++] = list[i].trim();
 						}
-					}  
+					}
+					keyMap(list, index);
 				}
 				line = br.readLine();
 				if (line != null)
@@ -96,7 +88,6 @@ public class KeyConfiguration {
 		String mapKey = keyList[2].trim();
 		Log.e(TAG, "scancodestr = " + scanCodeStr + " mapKey = " + mapKey);
 		int scanCode = Integer.parseInt(scanCodeStr);
-//		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		int intKeyMap = 0;
 		if (mapKey.contains("SOFT_LEFT")) {
 			intKeyMap = KeyEvent.KEYCODE_SOFT_LEFT;
@@ -380,8 +371,6 @@ public class KeyConfiguration {
 			intKeyMap = KeyEvent.KEYCODE_BUTTON_16;
 		}
 		if (intKeyMap != 0) {
-//			map.put(scanCode, intKeyMap);
-//			listKeyMap.add(map);
 			keyMap.put(scanCode, intKeyMap);
 		}
 	}
