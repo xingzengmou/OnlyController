@@ -53,6 +53,11 @@ public class InputAdapter {
 	
 	public static void onInputAdapterJoystickChange(int joystickType, int x, int y, String configFileName) {
 		Log.e(TAG, "onInputAdapterJoystickChange  joystickType = " + joystickType + " x = " + x + " y = " + y + " configFileName = " + configFileName);
+		InputAdapterKeyEvent event = new InputAdapterKeyEvent();
+		event.joystickType = joystickType;
+		event.x = x;
+		event.y = y;
+		mHandler.sendMessage(mHandler.obtainMessage(EventHandler.MSG_JOYSTICK, event));
 	}
 	
 	public static void onDeviceAdded(String devName) {

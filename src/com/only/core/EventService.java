@@ -14,6 +14,7 @@ import com.only.controller.R;
 import com.only.controller.data.GlobalData;
 import com.only.inputjar.InputJar;
 import com.only.jni.InputAdapter;
+import com.only.joystick.JoystickDataAnalysist;
 import com.only.net.socket.netSocket;
 import com.only.root.Root;
 import com.only.touch.Position;
@@ -60,7 +61,7 @@ public class EventService extends Service {
 	private Context context;
 	private static Activity thiz;
 	private String runningPackageName;
-	private static boolean packageIsRunning = false; //µ±Ç°ÔËÐÐµÄÓ¦ÓÃÊÇ²»ÊÇÒÑÔÚIMEÖÐÅäÖÃ£¬Èç¹ûÊÇÔòÎªTRUE£¬ ·ñÎªFALSE
+	private static boolean packageIsRunning = false; //ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ðµï¿½Ó¦ï¿½ï¿½ï¿½Ç²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IMEï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªTRUEï¿½ï¿½ ï¿½ï¿½ÎªFALSE
 	
 	/**
 	 * touch configuration params
@@ -92,6 +93,7 @@ public class EventService extends Service {
 		Log.e(TAG, "EventService oncreate");
 		context = this.getApplicationContext();
 		mHandler = new EventHandler();
+		JoystickDataAnalysist.init();
 		new Thread(new Runnable() {
 			public void run() {
 				envInit();
@@ -163,6 +165,12 @@ public class EventService extends Service {
 				}
 				break;
 			case MSG_JOYSTICK:
+				event = (InputAdapterKeyEvent) msg.obj;
+				if (event.joystickType == JoystickDataAnalysist.JOYSTICK_RIGHT_DATA) {
+					mJoystickHandler.sendMessage(mJoystickHandler.obtainMessage(JoystickDataAnalysist.MSG_JOYSTICK_RIGHT_DATA, msg.obj));
+				} else if (event.joystickType == JoystickDataAnalysist.JOYSTICK_LEFT_DATA) {
+					mJoystickHandler.sendMessage(mJoystickHandler.obtainMessage(JoystickDataAnalysist.MSG_JOYSTICK_LEFT_DATA, msg.obj));
+				}
 				break;
 			case MSG_CONNECT_INPUT_JAR_FAILED:
 				AlertDialog.Builder b = new AlertDialog.Builder(thiz);
@@ -365,7 +373,7 @@ public class EventService extends Service {
 			Log.e(TAG, "dialog keyCode = " + keyCode);
 			if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
 				backKeyCount ++;
-				if (backKeyCount == 1 && noTouchData) return false; //Èç¹ûscreenview ÉÏÃ»ÓÐÊý¾Ý£¬¾ÍÖ±½ÓÍË³ötouch
+				if (backKeyCount == 1 && noTouchData) return false; //ï¿½ï¿½ï¿½screenview ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½Ë³ï¿½touch
 				if (backKeyCount < 2) {
 					screenView.drawNow(false);
 					touched = false;
@@ -407,10 +415,10 @@ public class EventService extends Service {
 	};
 	
 	private boolean drawInfo(KeyEvent event) {
-		if (bop.r > 50 && event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) { //touchR < 50 ÔòÊÇ´¥ÃþµãºÍ°´¼üµÄÓ³Éä£¬touchR > 50ÔòÊÇÒ¡¸ËÇøÓòÓ³Éä
+		if (bop.r > 50 && event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) { //touchR < 50 ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½ï¿½ï¿½Í°ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ä£¬touchR > 50ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½
 			bop.color = Color.GREEN;
 			DisplayMetrics dm = this.getResources().getDisplayMetrics();
-			if ((bop.x > (dm.widthPixels / 2)) && ((bop.x - bop.r) <=  (dm.widthPixels / 2))) { //Èç¹ûÔ²µÄÖÐÐÄµãX×ø±êbop.xÂäÔÚÆÁµÄÓÒ°ë±ß£¬ÔòÕâ¸öÔ²ÊÇÓÒÒ¡¸ËÇøÓò£¬·´Ö®ÔòÊÇ×óÒ¡¸ËÇøÓò
+			if ((bop.x > (dm.widthPixels / 2)) && ((bop.x - bop.r) <=  (dm.widthPixels / 2))) { //ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Xï¿½ï¿½ï¿½bop.xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ò£¬·ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
 				return false;
 			} else if ((bop.x < (dm.widthPixels /2)) && ((bop.x + bop.r) >= (dm.widthPixels /2))) {
@@ -421,7 +429,7 @@ public class EventService extends Service {
 				Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			if ((bop.x - bop.r) > (dm.widthPixels/2)) { //ÓÒÒ¡¸ËÇøÓò
+			if ((bop.x - bop.r) > (dm.widthPixels/2)) { //ï¿½ï¿½Ò¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				if (hasRightJoystick) {
 					Toast.makeText(this, this.getString(R.string.has_right_joystick), Toast.LENGTH_SHORT).show();
 					return false;

@@ -26,6 +26,8 @@ public class JoystickDataAnalysist {
 	private static float leftJoystickCurrentR = 0.0f;
 	private static Profile rightJoystickProfile = null;
 	private static Profile leftJoystickProfile = null;
+	public static final int JOYSTICK_RIGHT_DATA = 2;
+	public static final int JOYSTICK_LEFT_DATA = 1;
 	
 	public static void init() {
 		EventService.setJoystickHandler(joystickHandler);
@@ -230,12 +232,15 @@ public class JoystickDataAnalysist {
 	 
 	 public static Handler joystickHandler = new Handler() {
 		 public void handleMessage(Message msg) {
+			 InputAdapterKeyEvent event;
 			 switch (msg.what) {
 			 case MSG_JOYSTICK_RIGHT_DATA:
-				 InputAdapterKeyEvent event = (InputAdapterKeyEvent) msg.obj;
-				 
+				 event = (InputAdapterKeyEvent) msg.obj;
+				 processRightJoystickData((byte)event.x, (byte)event.y);
 				 break;
 			 case MSG_JOYSTICK_LEFT_DATA:
+				 event = (InputAdapterKeyEvent) msg.obj;
+				 processLeftJoystickData((byte)event.x, (byte)event.y);
 				 break;
 			 }
 		 }
